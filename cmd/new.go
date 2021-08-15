@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/Narven/igniter-cli/templates"
 	"fmt"
+	"github.com/Narven/igniter-cli/templates"
 	"github.com/gobuffalo/packr"
 	"github.com/spf13/cobra"
 	"log"
@@ -27,8 +27,10 @@ var newCmd = &cobra.Command{
 
 		path, _ := cmd.Flags().GetString("path")
 		if path == "" {
-			//home, _ := os.UserHomeDir()
-			currWd, _ := os.Getwd()
+			currWd, err := os.Getwd()
+			if err != nil {
+				log.Fatal(err)
+			}
 			path = currWd
 		}
 
@@ -76,7 +78,7 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 		},
 		{
 			Path:    StrPtr(".env"),
-			Content: StrPtr(templates.GenEnv()),
+			Content: StrPtr(templates.GenEnv(projectName, dbDriver)),
 		},
 		{
 			Path:    StrPtr("Makefile"),
