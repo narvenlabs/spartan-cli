@@ -1,0 +1,372 @@
+{% import "strings" %}
+
+{% func GenEntityErrors() -%}
+package entity
+
+import "errors"
+
+var ErrNotFound = errors.New("not found")
+var ErrInvalidEntity = errors.New("invalid entity")
+{% endfunc %}
+
+{% func GenCustomEntity(name string, fields []string) -%}
+{% code lcName := strings.ToLower(name) %}
+package entity
+
+import (
+	"time"
+)
+
+// {%s name%} data
+type {%s name %} struct {
+	ID        int
+    {%- for _, f := range fields %}
+
+    {% endfor %}
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
+}
+
+// New{%s name %} create a new {%s lcName%}
+func New{%s name %}() (*{%s name %}, error) {
+	s := &{%s name %}{
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+	}
+
+	if err := s.Validate(); err != nil {
+		return nil, ErrInvalidEntity
+	}
+	return s, nil
+}
+
+func (s *{%s name %}) Validate() error {
+	return nil
+}
+{% endfunc %}
+
+{% func GenTestCustomEntity(projectName string, name string) -%}
+package entity_test
+
+import (
+    "{%s projectName %}/entity"
+	"testing"
+
+    "github.com/stretchr/testify/assert"
+)
+
+func TestNew{%s name %}() (t *testing.T) {
+	_, err := entity.New{%s name %}()
+	assert.Nil(t, err)
+	return
+}
+{% endfunc %}
+
+{% func GenEntityUsecaseInterface(projectName string, name string) -%}
+{% code
+lcName := strings.ToLower(name)
+%}
+package {%s lcName %}
+
+import (
+	"context"
+	"{%s projectName %}/entity"
+)
+
+type Reader interface {
+	Get(ctx context.Context, id entity.ID) (*entity.{%s name %}, error)
+	List(ctx context.Context) ([]*entity.{%s name %}, error)
+}
+
+type Writer interface {
+	Create(ctx context.Context, e *entity.{%s name %}) (entity.ID, error)
+	Update(ctx context.Context, e *entity.{%s name %}) error
+	Delete(ctx context.Context, id entity.ID) error
+}
+
+type Repository interface {
+	Reader
+	Writer
+}
+
+type UseCase interface {
+	Create{%s name %}(ctx context.Context) (entity.ID, error)
+	Get{%s name %}(ctx context.Context, id entity.ID) (*entity.{%s name %}, error)
+	List{%s name %}s(ctx context.Context) ([]*entity.{%s name %}, error)
+	Update{%s name %}(ctx context.Context, e *entity.{%s name %}) error
+}
+{% endfunc %}
+
+{% func GenEntityUsecaseService(projectName string, name string) -%}
+{% code lcName := strings.ToLower(name) %}
+package {%s lcName %}
+
+import (
+	"context"
+	"{%s projectName %}/entity"
+	"time"
+)
+
+type Service struct {
+	repo Repository
+}
+
+// New{%s name %} create a new {%s lcName %}
+func New{%s name %}(r Repository) *{%s name %} {
+	return &{%s name %}{
+		repo: r,
+	}
+}
+
+// Create{%s name %} create a {%s lcName %}
+func (s *Service) Create{%s name %}(ctx context.Context) (entity.ID, error) {
+	sub, err := entity.New{%s name %}()
+	if err != nil {
+		return sub.ID, err
+	}
+	return s.repo.Create(ctx, sub)
+}
+
+// Get{%s name %} get a {%s lcName %}
+func (s *Service) Get{%s name %}(ctx context.Context, id entity.ID) (*entity.{%s name %}, error) {
+	sub, err := s.repo.Get(ctx, id)
+	if sub == nil {
+		return nil, entity.ErrNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+	return sub, nil
+}
+
+// List{%s name %}s list {%s lcName %}s
+func (s *Service) List{%s name %}s(ctx context.Context) ([]*entity.{%s name %}, error) {
+	subs, err := s.repo.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return subs, nil
+}
+
+// Update{%s name %} update a {%s lcName %}
+func (s *Service) UpdateSubject(ctx context.Context, e *entity.{%s name %}) error {
+	if err := e.Validate(); err != nil {
+		return err
+	}
+	e.UpdatedAt = time.Now()
+	return s.repo.Update(ctx, e)
+}
+
+{% endfunc %}
+
+{% func GenEntityRepository(projectName string, name string) -%}
+package repository
+{% code lcName := strings.ToLower(name) %}
+
+import (
+	"context"
+	"fmt"
+	sq "github.com/Masterminds/squirrel"
+	"github.com/jmoiron/sqlx"
+	"{%s projectName %}/entity"
+	"time"
+)
+
+type {%s name %}Repo struct {
+	db *sqlx.DB
+}
+
+// New{%s name %}Repo create a new repository
+func New{%s name %}Repo(db *sqlx.DB) *{%s name %}Repo {
+	return &{%s name %}Repo{
+		db: db,
+	}
+}
+
+// Create a {%s lcName %}
+func (r *{%s name %}Repo) Create(ctx context.Context, e *entity.{%s name %}) (entity.ID, error) {
+	err := sq.
+		Insert("{%s lcName %}").
+		// Columns("id", "title", "description").
+		// Values(e.ID, e.Title, e.Description).
+		// Suffix("RETURNING \"id\""). // postgres only
+		RunWith(r.db).
+		ScanContext(ctx, &e)
+
+	if err != nil {
+		return e.ID, err
+	}
+
+	return e.ID, nil
+}
+
+// Get a {%s lcName %}
+func (r *{%s name %}Repo) Get(ctx context.Context, id entity.ID) (*entity.{%s name %}, error) {
+	var {%s lcName %} entity.{%s name %}
+	err := sq.
+		Select("title", "description", "created_at", "updated_at").
+		From("{%s lcName %}").
+		Where(sq.Eq{"id": id}).
+		Where(sq.Eq{"deleted_at": nil}).
+		Limit(1).
+		ScanContext(ctx, &{%s lcName %})
+	if err != nil {
+		return nil, err
+	}
+	return &{%s lcName %}, err
+}
+
+// Update a {%s lcName %}
+func (r *{%s name %}Repo) Update(ctx context.Context, e *entity.{%s name %}) error {
+	e.UpdatedAt = time.Now()
+	_, err := sq.
+		Update("{%s lcName %}").
+		Set("title", e.Title).
+		Set("description", e.Description).
+		Set("updated_at", e.UpdatedAt).
+		Where(sq.Eq{"id": e.ID}).ExecContext(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// List {%s lcName %}s
+func (r *{%s name %}Repo) List(ctx context.Context) ([]*entity.{%s name %}, error) {
+	tx, _ := r.db.Begin()
+
+	var {%s lcName %}s []*entity.{%s name %}
+	sql, _, err := sq.
+		Select("id", "title", "description", "created_at", "updated_at").
+		From("{%s lcName %}").
+		Limit(30). // TODO needs to come from pagination
+		ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := tx.QueryContext(ctx, sql)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var {%s lcName %} entity.{%s name %}
+		_ = rows.Scan(
+			&{%s lcName %}.ID,
+			&{%s lcName %}.Title,
+			&{%s lcName %}.Description,
+			&{%s lcName %}.CreatedAt,
+			&{%s lcName %}.UpdatedAt,
+		)
+		{%s lcName %}s = append({%s lcName %}s, &{%s lcName %})
+	}
+	return {%s lcName %}s, nil
+}
+
+// Delete {%s lcName %}s
+func (r *{%s name %}Repo) Delete(ctx context.Context, id entity.ID) error {
+	_, err := sq.
+		Delete("{%s lcName %}").
+		Where(sq.Eq{"id": id}).
+		Limit(1).
+		ExecContext(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+{% endfunc %}
+
+{% func GenResourceHandler(moduleName, resourceName string) -%}
+package handler
+{% code lcResourceName := strings.ToLower(resourceName) %}
+import (
+	"github.com/go-playground/validator/v10"
+	"github.com/gofiber/fiber/v2"
+	"{%s moduleName %}/api/presenter"
+	"{%s moduleName %}/entity"
+	"{%s moduleName %}/usecase/{%s lcResourceName %}"
+)
+
+func New{%s resourceName %}Handlers(r fiber.Router, service {%s lcResourceName %}.UseCase, v *validator.Validate) {
+	r.Get("", list{%s resourceName %}s(service))
+	r.Post("", create{%s resourceName %}(service, v))
+}
+
+func list{%s resourceName %}s(service {%s lcResourceName %}.UseCase) fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		var data []*entity.{%s resourceName %}
+
+		data, err := service.List{%s resourceName %}s(ctx.Context())
+		if err != nil {
+			return ctx.Status(fiber.StatusInternalServerError).JSON(err)
+		}
+
+		var toJ []*presenter.{%s resourceName %}
+		for _, d := range data {
+			toJ = append(toJ, &presenter.{%s resourceName %}{
+				ID:          d.ID,
+				CreatedAt:   d.CreatedAt,
+				UpdatedAt:   d.UpdatedAt,
+			})
+		}
+
+		return ctx.Status(fiber.StatusOK).JSON(toJ)
+	}
+}
+
+func create{%s resourceName %}(service {%s lcResourceName %}.UseCase, v *validator.Validate) fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		var body struct {
+			Title       string `json:"title" validate:"required"`
+			Description string `json:"description" validate:"required"`
+		}
+
+		if err := ctx.BodyParser(&body); err != nil {
+			return ctx.
+				Status(fiber.StatusInternalServerError).
+				JSON("Error adding {%s lcResourceName %}")
+		}
+
+		if err := v.StructCtx(ctx.Context(), &body); err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(err)
+		}
+
+		id, err := service.Create{%s resourceName %}(ctx.Context())
+		if err != nil {
+			return ctx.
+				Status(fiber.StatusInternalServerError).
+				JSON("Error adding {%s lcResourceName %}")
+		}
+
+		item, err := service.Get{%s resourceName %}(ctx.Context(), id)
+		if err != nil {
+			return ctx.Status(fiber.StatusInternalServerError).JSON("Error adding {%s lcResourceName %}")
+		}
+
+		toJ := &presenter.{%s resourceName %}{
+			ID:          item.ID,
+			CreatedAt:   item.CreatedAt,
+			UpdatedAt:   item.UpdatedAt,
+		}
+		return ctx.Status(fiber.StatusCreated).JSON(toJ)
+	}
+}
+{% endfunc %}
+
+{% func GenResourcePresenter(moduleName, resourceName string) -%}
+package presenter
+
+import (
+	"{%s moduleName %}/entity"
+	"time"
+)
+
+type {%s resourceName %} struct {
+	ID          entity.ID `json:"id"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+}
+{% endfunc %}

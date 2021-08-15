@@ -1,0 +1,540 @@
+{% func GenREADME(name string) -%}
+#  {%s name %}
+
+> This project was generated using [igniter-cli](https://github.com/Narven/igniter-cli)
+
+{% endfunc %}
+
+{% func GenGitignore() -%}
+dist
+build
+tmp
+.env
+*.log
+
+# Editors
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime*
+
+# System Files
+.DS_Store
+Thumbs.db
+
+node_modules
+
+# Go
+vendor/
+{% endfunc %}
+
+{% func GenGoMod(moduleName string) -%}
+module {%s moduleName %}
+
+go 1.15
+
+require (
+	github.com/go-sql-driver/mysql v1.6.0
+	github.com/gofiber/fiber/v2 v2.17.0
+	github.com/jmoiron/sqlx v1.3.4
+	github.com/spf13/viper v1.8.1
+)
+
+{% endfunc %}
+
+{% func GenDockerCompose(projectName, dbDriver string) -%}
+version: '3.8'
+services:
+  database:
+    container_name: {%s projectName%}-database
+    env_file:
+      - .env
+    {%- if dbDriver == "mysql" -%}
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: {%s projectName%}_dev
+      MYSQL_USER: {%s projectName%}
+      MYSQL_PASSWORD: {%s projectName%}
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    networks:
+      - {%s projectName%}_network
+    {%- elseif dbDriver == "postgres" -%}
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+    {%- endif -%}
+
+volumes:
+  data:
+
+networks:
+  {%s projectName%}_network:
+    driver: bridge
+{% endfunc %}
+
+{% func GenEnv() -%}
+DASHBOARD_URL=
+DASHBOARD_HOST=
+DATABASE_NAME=
+DATABASE_PASSWORD=
+DATABASE_PORT=
+DATABASE_USER=
+{% endfunc %}
+
+{% func GenMakeFile(name string) -%}
+.RECIPEPREFIX = >
+.PHONY: all
+.DEFAULT_GOAL := help
+
+BUILDPATH=$(CURDIR)
+GO=$(shell which go)
+GOINSTALL=$(GO) install
+GOCLEAN=$(GO) clean
+GOGET=$(GO) get
+
+# This how we want to name the binary output
+BINARY={%s name %}
+
+# These are the values we want to pass for VERSION and BUILD
+VERSION=1.0.0
+BUILD=`git rev-parse HEAD`
+
+# Setup the -ldflags option for go build here, interpolate the variable values
+LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.Build=${BUILD}"
+
+start:
+	> air -c .air.toml
+	# > go run api/main.go
+
+build:
+	> go build ${LDFLAGS} -o ${BINARY}
+
+deps: ## Download dependencies
+	> go mod tidy
+
+fmt: ## Format source code with gofmt
+	> find . -name "*.go" -exec gofmt -s -w {} \;
+
+help:
+	> @echo "Help: {%s name %} root Makefile"
+	> @echo "Usage: make [TARGET] [EXTRA_ARGUMENTS]"
+	> @echo "Targets:"
+	> @echo "~> start					- starts the application"
+
+{% endfunc %}
+
+{% func GenEditorConfig() -%}
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+
+[*.go]
+indent_style = tab
+
+[*.css]
+indent_size = 2
+
+[*.toml]
+indent_size = 2
+
+[*.js]
+indent_size = 2
+block_comment_start = /*
+block_comment_end = */
+
+[*.{html,htm}]
+indent_size = 2
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[*.json]
+indent_size = 2
+
+[*.diff]
+indent_size = 1
+
+{% endfunc %}
+
+{% func GenDockerIgnore() -%}
+*.log
+bin/
+!go.sum
+vendor/
+*.test
+coverage.out
+coverage.txt
+{% endfunc %}
+
+{% func GenDockerfile() -%}
+FROM golang:1.16.2-alpine3.13 as modules
+COPY go.mod go.sum /modules/
+WORKDIR /modules
+RUN go mod download
+
+FROM golang:1.16.2-alpine3.13 as builder
+COPY --from=modules /go/pkg /go/pkg
+COPY . /app
+WORKDIR /app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -tags migrate -o /bin/app ./cmd/app
+
+FROM scratch
+COPY --from=builder /app/config /config
+COPY --from=builder /app/migrations /migrations
+COPY --from=builder /bin/app /app
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+CMD ["/app"]
+{% endfunc %}
+
+{% func GenerateApiMain(moduleName, projectName, dbDriver string) -%}
+package main
+
+import (
+    "{%s moduleName %}/config"
+    "fmt"
+    "log"
+
+    _ "github.com/go-sql-driver/mysql"
+    "github.com/gofiber/fiber/v2"
+    "github.com/gofiber/fiber/v2/middleware/cors"
+    fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
+    "github.com/gofiber/fiber/v2/middleware/recover"
+    "github.com/jmoiron/sqlx"
+)
+
+func main() {
+    cfg, err := config.LoadConfig()
+    if err != nil {
+        log.Fatalf("LoadConfig error: %v", err)
+    }
+
+    {% if dbDriver == "mysql" %}
+    dsn := fmt.Sprintf(
+        "%s:%s@tcp(%s:%s)/%s?parseTime=true",
+        cfg.DatabaseUser,
+        cfg.DatabasePassword,
+        cfg.DatabaseHost,
+        cfg.DatabasePort,
+        cfg.DatabaseName,
+    )
+    {% elseif dbDriver == "postgres" %}
+
+    dsn := fmt.Sprintf(
+        "%s:%s@tcp(%s:%s)/%s?sslmode=disable",
+        cfg.DatabaseUser,
+        cfg.DatabasePassword,
+        cfg.DatabaseHost,
+        cfg.DatabasePort,
+        cfg.DatabaseName,
+    )
+    {% endif %}
+
+    db, err := sqlx.Connect("{%s dbDriver %}", dsn)
+    if err != nil {
+        log.Fatal(err.Error())
+    }
+    defer db.Close()
+
+    app := fiber.New(fiber.Config{
+        CaseSensitive: true,
+    })
+    app.Use(fiberLogger.New())
+    app.Use(recover.New())
+
+    app.Use(cors.New(cors.Config{
+        AllowCredentials: true,
+        AllowHeaders:     "Authorization,Content-Type,Crossdomain,Origin",
+        AllowMethods:     "PUT,PATCH,GET,POST,DELETE",
+        AllowOrigins:     "*",
+        ExposeHeaders:    "Content-Length,Authorization",
+    }))
+
+    app.Get("/ping", func(ctx *fiber.Ctx) error {
+        return ctx.SendStatus(fiber.StatusOK)
+    })
+
+    log.Fatal(app.Listen(fmt.Sprintf(":%d", 9069)))
+}
+{% endfunc %}
+
+{% func GenWelcomeMsg(name string) %}
+🔥️ Project {%s name %} generated successfully
+
+Next steps:
+
+    * cd {%s name %}
+    * make start
+{% endfunc %}
+
+{% func GenBaseEntity() -%}
+package entity
+
+type ID = int64
+{% endfunc %}
+
+{% func GenMITLicense(year int) -%}
+MIT License
+
+Copyright (c) {%d year %}
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+{% endfunc %}
+
+{% func GenGithubIssueTemplate() -%}
+### Issue report
+
+{% endfunc %}
+
+{% func GenPullRequestTemplate() -%}
+### What did you implement:
+
+Closes #XXXXX
+
+### How did you implement it:
+
+...
+
+### How can we verify it:
+
+...
+
+### TODO's:
+
+- [ ] Write documentation
+- [ ] Check that there aren't other open pull requests for the same issue/feature
+- [ ] Format your source code by `make fmt`
+- [ ] Pass the test by `make test`
+- [ ] Provide verification config / commands
+- [ ] Enable "Allow edits from maintainers" for this PR
+- [ ] Update the messages below
+
+**Is this ready for review?:** No
+
+**Is it a breaking change?:** No
+{% endfunc %}
+
+{% func GenGithubCI() -%}
+name: CI
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master]
+
+jobs:
+  Go:
+    name: Go
+    runs-on: ubuntu-latest
+
+    env:
+      SRC_DIR: src/github.com/${{ github.repository }}
+
+    strategy:
+      matrix:
+        go: [ '1.13.x', '1.14.x', '1.15.x' ]
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+        id: go
+
+      - name: Setup PATH
+        run: |
+          echo "GOPATH=${{ github.workspace }}" >> "$GITHUB_ENV"
+          echo "GOBIN=${{ github.workspace }}/bin" >> "$GITHUB_ENV"
+          echo "${{ github.workspace }}/bin" >> "$GITHUB_PATH"
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: ${{env.SRC_DIR}}
+
+      - name: Download dependencies
+        working-directory: ${{env.SRC_DIR}}
+        run: make deps
+
+      - name: Build binary
+        working-directory: ${{env.SRC_DIR}}
+        run: make build
+
+      - name: Run tests
+        working-directory: ${{env.SRC_DIR}}
+        run: make tests
+
+{% endfunc %}
+
+{% func GenTravis() -%}
+language: go
+sudo: false
+
+matrix:
+  include:
+    - go: 1.x
+      env: LATEST=true
+    - go: 1.15.x
+    - go: tip
+  allow_failures:
+    - go: tip
+
+install:
+  - export GO111MODULE=on
+  - go get -t -v $(go list ./... | grep -v -E "vendor")
+
+script:
+  - go test -cover -coverprofile=coverage.txt -covermode=atomic -v $(go list ./... | grep -v -E "vendor")
+
+# after_success:
+#  - bash <(curl -s https://codecov.io/bash)
+
+# notifications:
+#  email: false
+{% endfunc %}
+
+{% func GenAirToml() -%}
+# Working directory
+# . or absolute path, please note that the directories following must be under root.
+root = "."
+tmp_dir = "tmp"
+
+[build]
+# Just plain old shell command. You could use `make` as well.
+cmd = "go build -o ./tmp/main ."
+# Binary file yields from `cmd`.
+bin = "tmp/main"
+# Customize binary.
+full_bin = "APP_ENV=dev APP_USER=air ./tmp/main"
+# Watch these filename extensions.
+include_ext = ["go", "html"]
+# Ignore these filename extensions or directories.
+exclude_dir = ["tmp", "vendor", ".github", "migrations", "bin", "dist"]
+# Watch these directories if you specified.
+include_dir = []
+# Exclude files.
+exclude_file = [".env", "README.md", ".editconfig", "Makefile"]
+# Exclude specific regular expressions.
+exclude_regex = ["_test.go"]
+# Exclude unchanged files.
+exclude_unchanged = true
+# Follow symlink for directories
+follow_symlink = true
+# This log file places in your tmp_dir.
+log = "air.log"
+# It's not necessary to trigger build each time file changes if it's too frequent.
+delay = 1000 # ms
+# Stop running old binary when build errors occur.
+stop_on_error = true
+# Send Interrupt signal before killing process (windows does not support this feature)
+send_interrupt = false
+# Delay after sending Interrupt signal
+kill_delay = 500 # ms
+
+[log]
+# Show log time
+time = false
+
+[color]
+# Customize each part's color. If no color found, use the raw app log.
+main = "magenta"
+watcher = "cyan"
+build = "yellow"
+runner = "green"
+
+[misc]
+# Delete tmp directory on exit
+clean_on_exit = true
+{% endfunc %}
+
+{% func GenAuthors() -%}
+# This file lists all individuals having contributed content to the repository.
+
+FirstName LastName <FirstName.LastName@provider.com>
+{% endfunc %}
+
+{% func GenGitAttributes() -%}
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Reduce conflicts on markdown files
+*.md merge=union
+{% endfunc %}
+
+{% func GenProjectConfig() -%}
+package config
+
+import (
+	"fmt"
+	"github.com/spf13/viper"
+)
+
+type Config struct {
+	DatabaseHost           string `mapstructure:"DATABASE_HOST" validate:"required"`
+	DatabaseName           string `mapstructure:"DATABASE_NAME" validate:"required"`
+	DatabasePassword       string `mapstructure:"DATABASE_PASSWORD" validate:"required"`
+	DatabasePort           string `mapstructure:"DATABASE_PORT" validate:"required"`
+	DatabaseUser           string `mapstructure:"DATABASE_USER" validate:"required"`
+	JWTKeyPath             string `mapstructure:"JWT_KEY_PATH" validate:"required"`
+	SendgridAPIKey         string `mapstructure:"SENDGRID_API_KEY" validate:"required"`
+	SendgridEmail          string `mapstructure:"SENDGRID_EMAIL" validate:"required"`
+	SentryDSN              string `mapstructure:"SENTRY_DSN"`
+	SentryRelease          string `mapstructure:"SENTRY_RELEASE"`
+	SentryTracesSampleRate string `mapstructure:"SENTRY_TRACES_SAMPLE_RATE"`
+}
+
+func LoadConfig() (config Config, err error) {
+	v := viper.New()
+	v.SetConfigType("env")
+	v.SetConfigFile(".env")
+	v.AllowEmptyEnv(true)
+	v.AutomaticEnv()
+
+	err = v.ReadInConfig()
+	if err != nil {
+		fmt.Printf("Error when Fetching Configuration - %s", err)
+	}
+
+	if err := v.Unmarshal(&config); err != nil {
+		return config, err
+	}
+	return
+}
+{% endfunc %}
