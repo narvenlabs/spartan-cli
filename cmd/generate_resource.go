@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"com.igniter.cli/templates"
 	"fmt"
+	"github.com/Narven/igniter-cli/templates"
 	"golang.org/x/mod/modfile"
 	"io/ioutil"
 	"log"

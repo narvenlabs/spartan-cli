@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"com.igniter.cli/templates"
+	"github.com/Narven/igniter-cli/templates"
 	"fmt"
 	"github.com/gobuffalo/packr"
 	"github.com/spf13/cobra"

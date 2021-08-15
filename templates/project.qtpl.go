@@ -1083,7 +1083,7 @@ tmp_dir = "tmp"
 	qw422016.N().S("`")
 //line templates/project.qtpl:433
 	qw422016.N().S(` as well.
-cmd = "go build -o ./tmp/main ."
+cmd = "go build -o ./tmp/main api/main.go"
 # Binary file yields from `)
 //line templates/project.qtpl:433
 	qw422016.N().S("`")
@@ -1103,7 +1103,7 @@ exclude_dir = ["tmp", "vendor", ".github", "migrations", "bin", "dist"]
 # Watch these directories if you specified.
 include_dir = []
 # Exclude files.
-exclude_file = [".env", "README.md", ".editconfig", "Makefile"]
+exclude_file = ["README.md", ".editconfig", "Makefile"]
 # Exclude specific regular expressions.
 exclude_regex = ["_test.go"]
 # Exclude unchanged files.

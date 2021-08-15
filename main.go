@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "com.igniter.cli/cmd"
+import "github.com/Narven/igniter-cli/cmd"
 
 func main() {
 	cmd.Execute()

@@ -1,4 +1,4 @@
-module com.igniter.cli
+module github.com/Narven/igniter-cli
 
 go 1.16
 

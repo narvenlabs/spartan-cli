@@ -60,7 +60,7 @@ func GenEntityErrors() string {
 }
 
 //line templates/resource.qtpl:12
-func StreamGenCustomEntity(qw422016 *qt422016.Writer, name string, fields []string) {
+func StreamGenCustomEntity(qw422016 *qt422016.Writer, name string) {
 //line templates/resource.qtpl:13
 	lcName := strings.ToLower(name)
 
@@ -83,44 +83,33 @@ type `)
 //line templates/resource.qtpl:21
 	qw422016.N().S(` struct {
 	ID        int
-`)
-//line templates/resource.qtpl:23
-	for _, f := range fields {
-//line templates/resource.qtpl:23
-		qw422016.N().S(`
-
-    `)
-//line templates/resource.qtpl:25
-	}
-//line templates/resource.qtpl:25
-	qw422016.N().S(`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time
 }
 
 // New`)
-//line templates/resource.qtpl:31
+//line templates/resource.qtpl:28
 	qw422016.E().S(name)
-//line templates/resource.qtpl:31
+//line templates/resource.qtpl:28
 	qw422016.N().S(` create a new `)
-//line templates/resource.qtpl:31
+//line templates/resource.qtpl:28
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:31
+//line templates/resource.qtpl:28
 	qw422016.N().S(`
 func New`)
-//line templates/resource.qtpl:32
+//line templates/resource.qtpl:29
 	qw422016.E().S(name)
-//line templates/resource.qtpl:32
+//line templates/resource.qtpl:29
 	qw422016.N().S(`() (*`)
-//line templates/resource.qtpl:32
+//line templates/resource.qtpl:29
 	qw422016.E().S(name)
-//line templates/resource.qtpl:32
+//line templates/resource.qtpl:29
 	qw422016.N().S(`, error) {
 	s := &`)
-//line templates/resource.qtpl:33
+//line templates/resource.qtpl:30
 	qw422016.E().S(name)
-//line templates/resource.qtpl:33
+//line templates/resource.qtpl:30
 	qw422016.N().S(`{
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
@@ -133,52 +122,52 @@ func New`)
 }
 
 func (s *`)
-//line templates/resource.qtpl:44
+//line templates/resource.qtpl:41
 	qw422016.E().S(name)
-//line templates/resource.qtpl:44
+//line templates/resource.qtpl:41
 	qw422016.N().S(`) Validate() error {
 	return nil
 }
 `)
-//line templates/resource.qtpl:47
+//line templates/resource.qtpl:44
 }
 
-//line templates/resource.qtpl:47
-func WriteGenCustomEntity(qq422016 qtio422016.Writer, name string, fields []string) {
-//line templates/resource.qtpl:47
+//line templates/resource.qtpl:44
+func WriteGenCustomEntity(qq422016 qtio422016.Writer, name string) {
+//line templates/resource.qtpl:44
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/resource.qtpl:47
-	StreamGenCustomEntity(qw422016, name, fields)
-//line templates/resource.qtpl:47
+//line templates/resource.qtpl:44
+	StreamGenCustomEntity(qw422016, name)
+//line templates/resource.qtpl:44
 	qt422016.ReleaseWriter(qw422016)
-//line templates/resource.qtpl:47
+//line templates/resource.qtpl:44
 }
 
-//line templates/resource.qtpl:47
-func GenCustomEntity(name string, fields []string) string {
-//line templates/resource.qtpl:47
+//line templates/resource.qtpl:44
+func GenCustomEntity(name string) string {
+//line templates/resource.qtpl:44
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/resource.qtpl:47
-	WriteGenCustomEntity(qb422016, name, fields)
-//line templates/resource.qtpl:47
+//line templates/resource.qtpl:44
+	WriteGenCustomEntity(qb422016, name)
+//line templates/resource.qtpl:44
 	qs422016 := string(qb422016.B)
-//line templates/resource.qtpl:47
+//line templates/resource.qtpl:44
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/resource.qtpl:47
+//line templates/resource.qtpl:44
 	return qs422016
-//line templates/resource.qtpl:47
+//line templates/resource.qtpl:44
 }
 
-//line templates/resource.qtpl:49
+//line templates/resource.qtpl:46
 func StreamGenTestCustomEntity(qw422016 *qt422016.Writer, projectName string, name string) {
-//line templates/resource.qtpl:49
+//line templates/resource.qtpl:46
 	qw422016.N().S(`package entity_test
 
 import (
     "`)
-//line templates/resource.qtpl:53
+//line templates/resource.qtpl:50
 	qw422016.E().S(projectName)
-//line templates/resource.qtpl:53
+//line templates/resource.qtpl:50
 	qw422016.N().S(`/entity"
 	"testing"
 
@@ -186,93 +175,93 @@ import (
 )
 
 func TestNew`)
-//line templates/resource.qtpl:59
+//line templates/resource.qtpl:56
 	qw422016.E().S(name)
-//line templates/resource.qtpl:59
+//line templates/resource.qtpl:56
 	qw422016.N().S(`() (t *testing.T) {
 	_, err := entity.New`)
-//line templates/resource.qtpl:60
+//line templates/resource.qtpl:57
 	qw422016.E().S(name)
-//line templates/resource.qtpl:60
+//line templates/resource.qtpl:57
 	qw422016.N().S(`()
 	assert.Nil(t, err)
 	return
 }
 `)
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 }
 
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 func WriteGenTestCustomEntity(qq422016 qtio422016.Writer, projectName string, name string) {
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 	StreamGenTestCustomEntity(qw422016, projectName, name)
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 	qt422016.ReleaseWriter(qw422016)
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 }
 
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 func GenTestCustomEntity(projectName string, name string) string {
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 	WriteGenTestCustomEntity(qb422016, projectName, name)
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 	qs422016 := string(qb422016.B)
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 	return qs422016
-//line templates/resource.qtpl:64
+//line templates/resource.qtpl:61
 }
 
-//line templates/resource.qtpl:66
+//line templates/resource.qtpl:63
 func StreamGenEntityUsecaseInterface(qw422016 *qt422016.Writer, projectName string, name string) {
-//line templates/resource.qtpl:68
+//line templates/resource.qtpl:65
 	lcName := strings.ToLower(name)
 
-//line templates/resource.qtpl:69
+//line templates/resource.qtpl:66
 	qw422016.N().S(`
 package `)
-//line templates/resource.qtpl:70
+//line templates/resource.qtpl:67
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:70
+//line templates/resource.qtpl:67
 	qw422016.N().S(`
 
 import (
 	"context"
 	"`)
-//line templates/resource.qtpl:74
+//line templates/resource.qtpl:71
 	qw422016.E().S(projectName)
-//line templates/resource.qtpl:74
+//line templates/resource.qtpl:71
 	qw422016.N().S(`/entity"
 )
 
 type Reader interface {
 	Get(ctx context.Context, id entity.ID) (*entity.`)
-//line templates/resource.qtpl:78
+//line templates/resource.qtpl:75
 	qw422016.E().S(name)
-//line templates/resource.qtpl:78
+//line templates/resource.qtpl:75
 	qw422016.N().S(`, error)
 	List(ctx context.Context) ([]*entity.`)
-//line templates/resource.qtpl:79
+//line templates/resource.qtpl:76
 	qw422016.E().S(name)
-//line templates/resource.qtpl:79
+//line templates/resource.qtpl:76
 	qw422016.N().S(`, error)
 }
 
 type Writer interface {
 	Create(ctx context.Context, e *entity.`)
-//line templates/resource.qtpl:83
+//line templates/resource.qtpl:80
 	qw422016.E().S(name)
-//line templates/resource.qtpl:83
+//line templates/resource.qtpl:80
 	qw422016.N().S(`) (entity.ID, error)
 	Update(ctx context.Context, e *entity.`)
-//line templates/resource.qtpl:84
+//line templates/resource.qtpl:81
 	qw422016.E().S(name)
-//line templates/resource.qtpl:84
+//line templates/resource.qtpl:81
 	qw422016.N().S(`) error
 	Delete(ctx context.Context, id entity.ID) error
 }
@@ -284,87 +273,87 @@ type Repository interface {
 
 type UseCase interface {
 	Create`)
-//line templates/resource.qtpl:94
+//line templates/resource.qtpl:91
 	qw422016.E().S(name)
-//line templates/resource.qtpl:94
+//line templates/resource.qtpl:91
 	qw422016.N().S(`(ctx context.Context) (entity.ID, error)
 	Get`)
-//line templates/resource.qtpl:95
+//line templates/resource.qtpl:92
 	qw422016.E().S(name)
-//line templates/resource.qtpl:95
+//line templates/resource.qtpl:92
 	qw422016.N().S(`(ctx context.Context, id entity.ID) (*entity.`)
-//line templates/resource.qtpl:95
+//line templates/resource.qtpl:92
 	qw422016.E().S(name)
-//line templates/resource.qtpl:95
+//line templates/resource.qtpl:92
 	qw422016.N().S(`, error)
 	List`)
-//line templates/resource.qtpl:96
+//line templates/resource.qtpl:93
 	qw422016.E().S(name)
-//line templates/resource.qtpl:96
+//line templates/resource.qtpl:93
 	qw422016.N().S(`s(ctx context.Context) ([]*entity.`)
-//line templates/resource.qtpl:96
+//line templates/resource.qtpl:93
 	qw422016.E().S(name)
-//line templates/resource.qtpl:96
+//line templates/resource.qtpl:93
 	qw422016.N().S(`, error)
 	Update`)
-//line templates/resource.qtpl:97
+//line templates/resource.qtpl:94
 	qw422016.E().S(name)
-//line templates/resource.qtpl:97
+//line templates/resource.qtpl:94
 	qw422016.N().S(`(ctx context.Context, e *entity.`)
-//line templates/resource.qtpl:97
+//line templates/resource.qtpl:94
 	qw422016.E().S(name)
-//line templates/resource.qtpl:97
+//line templates/resource.qtpl:94
 	qw422016.N().S(`) error
 }
 `)
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 }
 
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 func WriteGenEntityUsecaseInterface(qq422016 qtio422016.Writer, projectName string, name string) {
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 	StreamGenEntityUsecaseInterface(qw422016, projectName, name)
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 	qt422016.ReleaseWriter(qw422016)
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 }
 
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 func GenEntityUsecaseInterface(projectName string, name string) string {
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 	WriteGenEntityUsecaseInterface(qb422016, projectName, name)
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 	qs422016 := string(qb422016.B)
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 	return qs422016
-//line templates/resource.qtpl:99
+//line templates/resource.qtpl:96
 }
 
-//line templates/resource.qtpl:101
+//line templates/resource.qtpl:98
 func StreamGenEntityUsecaseService(qw422016 *qt422016.Writer, projectName string, name string) {
-//line templates/resource.qtpl:102
+//line templates/resource.qtpl:99
 	lcName := strings.ToLower(name)
 
-//line templates/resource.qtpl:102
+//line templates/resource.qtpl:99
 	qw422016.N().S(`
 package `)
-//line templates/resource.qtpl:103
+//line templates/resource.qtpl:100
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:103
+//line templates/resource.qtpl:100
 	qw422016.N().S(`
 
 import (
 	"context"
 	"`)
-//line templates/resource.qtpl:107
+//line templates/resource.qtpl:104
 	qw422016.E().S(projectName)
-//line templates/resource.qtpl:107
+//line templates/resource.qtpl:104
 	qw422016.N().S(`/entity"
 	"time"
 )
@@ -374,50 +363,50 @@ type Service struct {
 }
 
 // New`)
-//line templates/resource.qtpl:115
+//line templates/resource.qtpl:112
 	qw422016.E().S(name)
-//line templates/resource.qtpl:115
+//line templates/resource.qtpl:112
 	qw422016.N().S(` create a new `)
-//line templates/resource.qtpl:115
+//line templates/resource.qtpl:112
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:115
+//line templates/resource.qtpl:112
 	qw422016.N().S(`
 func New`)
-//line templates/resource.qtpl:116
+//line templates/resource.qtpl:113
 	qw422016.E().S(name)
-//line templates/resource.qtpl:116
+//line templates/resource.qtpl:113
 	qw422016.N().S(`(r Repository) *`)
-//line templates/resource.qtpl:116
+//line templates/resource.qtpl:113
 	qw422016.E().S(name)
-//line templates/resource.qtpl:116
+//line templates/resource.qtpl:113
 	qw422016.N().S(` {
 	return &`)
-//line templates/resource.qtpl:117
+//line templates/resource.qtpl:114
 	qw422016.E().S(name)
-//line templates/resource.qtpl:117
+//line templates/resource.qtpl:114
 	qw422016.N().S(`{
 		repo: r,
 	}
 }
 
 // Create`)
-//line templates/resource.qtpl:122
+//line templates/resource.qtpl:119
 	qw422016.E().S(name)
-//line templates/resource.qtpl:122
+//line templates/resource.qtpl:119
 	qw422016.N().S(` create a `)
-//line templates/resource.qtpl:122
+//line templates/resource.qtpl:119
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:122
+//line templates/resource.qtpl:119
 	qw422016.N().S(`
 func (s *Service) Create`)
-//line templates/resource.qtpl:123
+//line templates/resource.qtpl:120
 	qw422016.E().S(name)
-//line templates/resource.qtpl:123
+//line templates/resource.qtpl:120
 	qw422016.N().S(`(ctx context.Context) (entity.ID, error) {
 	sub, err := entity.New`)
-//line templates/resource.qtpl:124
+//line templates/resource.qtpl:121
 	qw422016.E().S(name)
-//line templates/resource.qtpl:124
+//line templates/resource.qtpl:121
 	qw422016.N().S(`()
 	if err != nil {
 		return sub.ID, err
@@ -426,22 +415,22 @@ func (s *Service) Create`)
 }
 
 // Get`)
-//line templates/resource.qtpl:131
+//line templates/resource.qtpl:128
 	qw422016.E().S(name)
-//line templates/resource.qtpl:131
+//line templates/resource.qtpl:128
 	qw422016.N().S(` get a `)
-//line templates/resource.qtpl:131
+//line templates/resource.qtpl:128
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:131
+//line templates/resource.qtpl:128
 	qw422016.N().S(`
 func (s *Service) Get`)
-//line templates/resource.qtpl:132
+//line templates/resource.qtpl:129
 	qw422016.E().S(name)
-//line templates/resource.qtpl:132
+//line templates/resource.qtpl:129
 	qw422016.N().S(`(ctx context.Context, id entity.ID) (*entity.`)
-//line templates/resource.qtpl:132
+//line templates/resource.qtpl:129
 	qw422016.E().S(name)
-//line templates/resource.qtpl:132
+//line templates/resource.qtpl:129
 	qw422016.N().S(`, error) {
 	sub, err := s.repo.Get(ctx, id)
 	if sub == nil {
@@ -454,22 +443,22 @@ func (s *Service) Get`)
 }
 
 // List`)
-//line templates/resource.qtpl:143
+//line templates/resource.qtpl:140
 	qw422016.E().S(name)
-//line templates/resource.qtpl:143
+//line templates/resource.qtpl:140
 	qw422016.N().S(`s list `)
-//line templates/resource.qtpl:143
+//line templates/resource.qtpl:140
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:143
+//line templates/resource.qtpl:140
 	qw422016.N().S(`s
 func (s *Service) List`)
-//line templates/resource.qtpl:144
+//line templates/resource.qtpl:141
 	qw422016.E().S(name)
-//line templates/resource.qtpl:144
+//line templates/resource.qtpl:141
 	qw422016.N().S(`s(ctx context.Context) ([]*entity.`)
-//line templates/resource.qtpl:144
+//line templates/resource.qtpl:141
 	qw422016.E().S(name)
-//line templates/resource.qtpl:144
+//line templates/resource.qtpl:141
 	qw422016.N().S(`, error) {
 	subs, err := s.repo.List(ctx)
 	if err != nil {
@@ -479,18 +468,18 @@ func (s *Service) List`)
 }
 
 // Update`)
-//line templates/resource.qtpl:152
+//line templates/resource.qtpl:149
 	qw422016.E().S(name)
-//line templates/resource.qtpl:152
+//line templates/resource.qtpl:149
 	qw422016.N().S(` update a `)
-//line templates/resource.qtpl:152
+//line templates/resource.qtpl:149
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:152
+//line templates/resource.qtpl:149
 	qw422016.N().S(`
 func (s *Service) UpdateSubject(ctx context.Context, e *entity.`)
-//line templates/resource.qtpl:153
+//line templates/resource.qtpl:150
 	qw422016.E().S(name)
-//line templates/resource.qtpl:153
+//line templates/resource.qtpl:150
 	qw422016.N().S(`) error {
 	if err := e.Validate(); err != nil {
 		return err
@@ -500,44 +489,44 @@ func (s *Service) UpdateSubject(ctx context.Context, e *entity.`)
 }
 
 `)
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 }
 
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 func WriteGenEntityUsecaseService(qq422016 qtio422016.Writer, projectName string, name string) {
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 	StreamGenEntityUsecaseService(qw422016, projectName, name)
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 	qt422016.ReleaseWriter(qw422016)
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 }
 
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 func GenEntityUsecaseService(projectName string, name string) string {
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 	WriteGenEntityUsecaseService(qb422016, projectName, name)
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 	qs422016 := string(qb422016.B)
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 	return qs422016
-//line templates/resource.qtpl:161
+//line templates/resource.qtpl:158
 }
 
-//line templates/resource.qtpl:163
+//line templates/resource.qtpl:160
 func StreamGenEntityRepository(qw422016 *qt422016.Writer, projectName string, name string) {
-//line templates/resource.qtpl:163
+//line templates/resource.qtpl:160
 	qw422016.N().S(`package repository
 `)
-//line templates/resource.qtpl:165
+//line templates/resource.qtpl:162
 	lcName := strings.ToLower(name)
 
-//line templates/resource.qtpl:165
+//line templates/resource.qtpl:162
 	qw422016.N().S(`
 
 import (
@@ -546,63 +535,63 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 	"`)
-//line templates/resource.qtpl:172
+//line templates/resource.qtpl:169
 	qw422016.E().S(projectName)
-//line templates/resource.qtpl:172
+//line templates/resource.qtpl:169
 	qw422016.N().S(`/entity"
 	"time"
 )
 
 type `)
-//line templates/resource.qtpl:176
+//line templates/resource.qtpl:173
 	qw422016.E().S(name)
-//line templates/resource.qtpl:176
+//line templates/resource.qtpl:173
 	qw422016.N().S(`Repo struct {
 	db *sqlx.DB
 }
 
 // New`)
-//line templates/resource.qtpl:180
+//line templates/resource.qtpl:177
 	qw422016.E().S(name)
-//line templates/resource.qtpl:180
+//line templates/resource.qtpl:177
 	qw422016.N().S(`Repo create a new repository
 func New`)
-//line templates/resource.qtpl:181
+//line templates/resource.qtpl:178
 	qw422016.E().S(name)
-//line templates/resource.qtpl:181
+//line templates/resource.qtpl:178
 	qw422016.N().S(`Repo(db *sqlx.DB) *`)
-//line templates/resource.qtpl:181
+//line templates/resource.qtpl:178
 	qw422016.E().S(name)
-//line templates/resource.qtpl:181
+//line templates/resource.qtpl:178
 	qw422016.N().S(`Repo {
 	return &`)
-//line templates/resource.qtpl:182
+//line templates/resource.qtpl:179
 	qw422016.E().S(name)
-//line templates/resource.qtpl:182
+//line templates/resource.qtpl:179
 	qw422016.N().S(`Repo{
 		db: db,
 	}
 }
 
 // Create a `)
-//line templates/resource.qtpl:187
+//line templates/resource.qtpl:184
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:187
+//line templates/resource.qtpl:184
 	qw422016.N().S(`
 func (r *`)
-//line templates/resource.qtpl:188
+//line templates/resource.qtpl:185
 	qw422016.E().S(name)
-//line templates/resource.qtpl:188
+//line templates/resource.qtpl:185
 	qw422016.N().S(`Repo) Create(ctx context.Context, e *entity.`)
-//line templates/resource.qtpl:188
+//line templates/resource.qtpl:185
 	qw422016.E().S(name)
-//line templates/resource.qtpl:188
+//line templates/resource.qtpl:185
 	qw422016.N().S(`) (entity.ID, error) {
 	err := sq.
 		Insert("`)
-//line templates/resource.qtpl:190
+//line templates/resource.qtpl:187
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:190
+//line templates/resource.qtpl:187
 	qw422016.N().S(`").
 		// Columns("id", "title", "description").
 		// Values(e.ID, e.Title, e.Description).
@@ -618,73 +607,73 @@ func (r *`)
 }
 
 // Get a `)
-//line templates/resource.qtpl:204
+//line templates/resource.qtpl:201
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:204
+//line templates/resource.qtpl:201
 	qw422016.N().S(`
 func (r *`)
-//line templates/resource.qtpl:205
+//line templates/resource.qtpl:202
 	qw422016.E().S(name)
-//line templates/resource.qtpl:205
+//line templates/resource.qtpl:202
 	qw422016.N().S(`Repo) Get(ctx context.Context, id entity.ID) (*entity.`)
-//line templates/resource.qtpl:205
+//line templates/resource.qtpl:202
 	qw422016.E().S(name)
-//line templates/resource.qtpl:205
+//line templates/resource.qtpl:202
 	qw422016.N().S(`, error) {
 	var `)
-//line templates/resource.qtpl:206
+//line templates/resource.qtpl:203
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:206
+//line templates/resource.qtpl:203
 	qw422016.N().S(` entity.`)
-//line templates/resource.qtpl:206
+//line templates/resource.qtpl:203
 	qw422016.E().S(name)
-//line templates/resource.qtpl:206
+//line templates/resource.qtpl:203
 	qw422016.N().S(`
 	err := sq.
 		Select("title", "description", "created_at", "updated_at").
 		From("`)
-//line templates/resource.qtpl:209
+//line templates/resource.qtpl:206
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:209
+//line templates/resource.qtpl:206
 	qw422016.N().S(`").
 		Where(sq.Eq{"id": id}).
 		Where(sq.Eq{"deleted_at": nil}).
 		Limit(1).
 		ScanContext(ctx, &`)
-//line templates/resource.qtpl:213
+//line templates/resource.qtpl:210
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:213
+//line templates/resource.qtpl:210
 	qw422016.N().S(`)
 	if err != nil {
 		return nil, err
 	}
 	return &`)
-//line templates/resource.qtpl:217
+//line templates/resource.qtpl:214
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:217
+//line templates/resource.qtpl:214
 	qw422016.N().S(`, err
 }
 
 // Update a `)
-//line templates/resource.qtpl:220
+//line templates/resource.qtpl:217
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:220
+//line templates/resource.qtpl:217
 	qw422016.N().S(`
 func (r *`)
-//line templates/resource.qtpl:221
+//line templates/resource.qtpl:218
 	qw422016.E().S(name)
-//line templates/resource.qtpl:221
+//line templates/resource.qtpl:218
 	qw422016.N().S(`Repo) Update(ctx context.Context, e *entity.`)
-//line templates/resource.qtpl:221
+//line templates/resource.qtpl:218
 	qw422016.E().S(name)
-//line templates/resource.qtpl:221
+//line templates/resource.qtpl:218
 	qw422016.N().S(`) error {
 	e.UpdatedAt = time.Now()
 	_, err := sq.
 		Update("`)
-//line templates/resource.qtpl:224
+//line templates/resource.qtpl:221
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:224
+//line templates/resource.qtpl:221
 	qw422016.N().S(`").
 		Set("title", e.Title).
 		Set("description", e.Description).
@@ -697,36 +686,36 @@ func (r *`)
 }
 
 // List `)
-//line templates/resource.qtpl:235
+//line templates/resource.qtpl:232
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:235
+//line templates/resource.qtpl:232
 	qw422016.N().S(`s
 func (r *`)
-//line templates/resource.qtpl:236
+//line templates/resource.qtpl:233
 	qw422016.E().S(name)
-//line templates/resource.qtpl:236
+//line templates/resource.qtpl:233
 	qw422016.N().S(`Repo) List(ctx context.Context) ([]*entity.`)
-//line templates/resource.qtpl:236
+//line templates/resource.qtpl:233
 	qw422016.E().S(name)
-//line templates/resource.qtpl:236
+//line templates/resource.qtpl:233
 	qw422016.N().S(`, error) {
 	tx, _ := r.db.Begin()
 
 	var `)
-//line templates/resource.qtpl:239
+//line templates/resource.qtpl:236
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:239
+//line templates/resource.qtpl:236
 	qw422016.N().S(`s []*entity.`)
-//line templates/resource.qtpl:239
+//line templates/resource.qtpl:236
 	qw422016.E().S(name)
-//line templates/resource.qtpl:239
+//line templates/resource.qtpl:236
 	qw422016.N().S(`
 	sql, _, err := sq.
 		Select("id", "title", "description", "created_at", "updated_at").
 		From("`)
-//line templates/resource.qtpl:242
+//line templates/resource.qtpl:239
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:242
+//line templates/resource.qtpl:239
 	qw422016.N().S(`").
 		Limit(30). // TODO needs to come from pagination
 		ToSql()
@@ -741,77 +730,77 @@ func (r *`)
 
 	for rows.Next() {
 		var `)
-//line templates/resource.qtpl:255
+//line templates/resource.qtpl:252
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:255
+//line templates/resource.qtpl:252
 	qw422016.N().S(` entity.`)
-//line templates/resource.qtpl:255
+//line templates/resource.qtpl:252
 	qw422016.E().S(name)
-//line templates/resource.qtpl:255
+//line templates/resource.qtpl:252
 	qw422016.N().S(`
 		_ = rows.Scan(
 			&`)
-//line templates/resource.qtpl:257
+//line templates/resource.qtpl:254
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:257
+//line templates/resource.qtpl:254
 	qw422016.N().S(`.ID,
 			&`)
-//line templates/resource.qtpl:258
+//line templates/resource.qtpl:255
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:258
+//line templates/resource.qtpl:255
 	qw422016.N().S(`.Title,
 			&`)
-//line templates/resource.qtpl:259
+//line templates/resource.qtpl:256
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:259
+//line templates/resource.qtpl:256
 	qw422016.N().S(`.Description,
 			&`)
-//line templates/resource.qtpl:260
+//line templates/resource.qtpl:257
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:260
+//line templates/resource.qtpl:257
 	qw422016.N().S(`.CreatedAt,
 			&`)
-//line templates/resource.qtpl:261
+//line templates/resource.qtpl:258
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:261
+//line templates/resource.qtpl:258
 	qw422016.N().S(`.UpdatedAt,
 		)
 		`)
-//line templates/resource.qtpl:263
+//line templates/resource.qtpl:260
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:263
+//line templates/resource.qtpl:260
 	qw422016.N().S(`s = append(`)
-//line templates/resource.qtpl:263
+//line templates/resource.qtpl:260
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:263
+//line templates/resource.qtpl:260
 	qw422016.N().S(`s, &`)
-//line templates/resource.qtpl:263
+//line templates/resource.qtpl:260
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:263
+//line templates/resource.qtpl:260
 	qw422016.N().S(`)
 	}
 	return `)
-//line templates/resource.qtpl:265
+//line templates/resource.qtpl:262
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:265
+//line templates/resource.qtpl:262
 	qw422016.N().S(`s, nil
 }
 
 // Delete `)
-//line templates/resource.qtpl:268
+//line templates/resource.qtpl:265
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:268
+//line templates/resource.qtpl:265
 	qw422016.N().S(`s
 func (r *`)
-//line templates/resource.qtpl:269
+//line templates/resource.qtpl:266
 	qw422016.E().S(name)
-//line templates/resource.qtpl:269
+//line templates/resource.qtpl:266
 	qw422016.N().S(`Repo) Delete(ctx context.Context, id entity.ID) error {
 	_, err := sq.
 		Delete("`)
-//line templates/resource.qtpl:271
+//line templates/resource.qtpl:268
 	qw422016.E().S(lcName)
-//line templates/resource.qtpl:271
+//line templates/resource.qtpl:268
 	qw422016.N().S(`").
 		Where(sq.Eq{"id": id}).
 		Limit(1).
@@ -822,125 +811,125 @@ func (r *`)
 	return nil
 }
 `)
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 }
 
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 func WriteGenEntityRepository(qq422016 qtio422016.Writer, projectName string, name string) {
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 	StreamGenEntityRepository(qw422016, projectName, name)
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 	qt422016.ReleaseWriter(qw422016)
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 }
 
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 func GenEntityRepository(projectName string, name string) string {
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 	WriteGenEntityRepository(qb422016, projectName, name)
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 	qs422016 := string(qb422016.B)
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 	return qs422016
-//line templates/resource.qtpl:280
+//line templates/resource.qtpl:277
 }
 
-//line templates/resource.qtpl:282
+//line templates/resource.qtpl:279
 func StreamGenResourceHandler(qw422016 *qt422016.Writer, moduleName, resourceName string) {
-//line templates/resource.qtpl:282
+//line templates/resource.qtpl:279
 	qw422016.N().S(`package handler
 `)
-//line templates/resource.qtpl:284
+//line templates/resource.qtpl:281
 	lcResourceName := strings.ToLower(resourceName)
 
-//line templates/resource.qtpl:284
+//line templates/resource.qtpl:281
 	qw422016.N().S(`
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"`)
-//line templates/resource.qtpl:288
+//line templates/resource.qtpl:285
 	qw422016.E().S(moduleName)
-//line templates/resource.qtpl:288
+//line templates/resource.qtpl:285
 	qw422016.N().S(`/api/presenter"
 	"`)
-//line templates/resource.qtpl:289
+//line templates/resource.qtpl:286
 	qw422016.E().S(moduleName)
-//line templates/resource.qtpl:289
+//line templates/resource.qtpl:286
 	qw422016.N().S(`/entity"
 	"`)
-//line templates/resource.qtpl:290
+//line templates/resource.qtpl:287
 	qw422016.E().S(moduleName)
-//line templates/resource.qtpl:290
+//line templates/resource.qtpl:287
 	qw422016.N().S(`/usecase/`)
-//line templates/resource.qtpl:290
+//line templates/resource.qtpl:287
 	qw422016.E().S(lcResourceName)
-//line templates/resource.qtpl:290
+//line templates/resource.qtpl:287
 	qw422016.N().S(`"
 )
 
 func New`)
-//line templates/resource.qtpl:293
+//line templates/resource.qtpl:290
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:293
+//line templates/resource.qtpl:290
 	qw422016.N().S(`Handlers(r fiber.Router, service `)
-//line templates/resource.qtpl:293
+//line templates/resource.qtpl:290
 	qw422016.E().S(lcResourceName)
-//line templates/resource.qtpl:293
+//line templates/resource.qtpl:290
 	qw422016.N().S(`.UseCase, v *validator.Validate) {
 	r.Get("", list`)
-//line templates/resource.qtpl:294
+//line templates/resource.qtpl:291
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:294
+//line templates/resource.qtpl:291
 	qw422016.N().S(`s(service))
 	r.Post("", create`)
-//line templates/resource.qtpl:295
+//line templates/resource.qtpl:292
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:295
+//line templates/resource.qtpl:292
 	qw422016.N().S(`(service, v))
 }
 
 func list`)
-//line templates/resource.qtpl:298
+//line templates/resource.qtpl:295
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:298
+//line templates/resource.qtpl:295
 	qw422016.N().S(`s(service `)
-//line templates/resource.qtpl:298
+//line templates/resource.qtpl:295
 	qw422016.E().S(lcResourceName)
-//line templates/resource.qtpl:298
+//line templates/resource.qtpl:295
 	qw422016.N().S(`.UseCase) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		var data []*entity.`)
-//line templates/resource.qtpl:300
+//line templates/resource.qtpl:297
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:300
+//line templates/resource.qtpl:297
 	qw422016.N().S(`
 
 		data, err := service.List`)
-//line templates/resource.qtpl:302
+//line templates/resource.qtpl:299
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:302
+//line templates/resource.qtpl:299
 	qw422016.N().S(`s(ctx.Context())
 		if err != nil {
 			return ctx.Status(fiber.StatusInternalServerError).JSON(err)
 		}
 
 		var toJ []*presenter.`)
-//line templates/resource.qtpl:307
+//line templates/resource.qtpl:304
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:307
+//line templates/resource.qtpl:304
 	qw422016.N().S(`
 		for _, d := range data {
 			toJ = append(toJ, &presenter.`)
-//line templates/resource.qtpl:309
+//line templates/resource.qtpl:306
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:309
+//line templates/resource.qtpl:306
 	qw422016.N().S(`{
 				ID:          d.ID,
 				CreatedAt:   d.CreatedAt,
@@ -953,33 +942,33 @@ func list`)
 }
 
 func create`)
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.N().S(`(service `)
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.E().S(lcResourceName)
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.N().S(`.UseCase, v *validator.Validate) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		var body struct {
 			Title       string `)
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.N().S("`")
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.N().S(`json:"title" validate:"required"`)
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.N().S("`")
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.N().S(`
 			Description string `)
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.N().S("`")
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.N().S(`json:"description" validate:"required"`)
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.N().S("`")
-//line templates/resource.qtpl:320
+//line templates/resource.qtpl:317
 	qw422016.N().S(`
 		}
 
@@ -987,9 +976,9 @@ func create`)
 			return ctx.
 				Status(fiber.StatusInternalServerError).
 				JSON("Error adding `)
-//line templates/resource.qtpl:330
+//line templates/resource.qtpl:327
 	qw422016.E().S(lcResourceName)
-//line templates/resource.qtpl:330
+//line templates/resource.qtpl:327
 	qw422016.N().S(`")
 		}
 
@@ -998,37 +987,37 @@ func create`)
 		}
 
 		id, err := service.Create`)
-//line templates/resource.qtpl:337
+//line templates/resource.qtpl:334
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:337
+//line templates/resource.qtpl:334
 	qw422016.N().S(`(ctx.Context())
 		if err != nil {
 			return ctx.
 				Status(fiber.StatusInternalServerError).
 				JSON("Error adding `)
-//line templates/resource.qtpl:341
+//line templates/resource.qtpl:338
 	qw422016.E().S(lcResourceName)
-//line templates/resource.qtpl:341
+//line templates/resource.qtpl:338
 	qw422016.N().S(`")
 		}
 
 		item, err := service.Get`)
-//line templates/resource.qtpl:344
+//line templates/resource.qtpl:341
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:344
+//line templates/resource.qtpl:341
 	qw422016.N().S(`(ctx.Context(), id)
 		if err != nil {
 			return ctx.Status(fiber.StatusInternalServerError).JSON("Error adding `)
-//line templates/resource.qtpl:346
+//line templates/resource.qtpl:343
 	qw422016.E().S(lcResourceName)
-//line templates/resource.qtpl:346
+//line templates/resource.qtpl:343
 	qw422016.N().S(`")
 		}
 
 		toJ := &presenter.`)
-//line templates/resource.qtpl:349
+//line templates/resource.qtpl:346
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:349
+//line templates/resource.qtpl:346
 	qw422016.N().S(`{
 			ID:          item.ID,
 			CreatedAt:   item.CreatedAt,
@@ -1038,108 +1027,108 @@ func create`)
 	}
 }
 `)
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 }
 
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 func WriteGenResourceHandler(qq422016 qtio422016.Writer, moduleName, resourceName string) {
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 	StreamGenResourceHandler(qw422016, moduleName, resourceName)
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 	qt422016.ReleaseWriter(qw422016)
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 }
 
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 func GenResourceHandler(moduleName, resourceName string) string {
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 	WriteGenResourceHandler(qb422016, moduleName, resourceName)
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 	qs422016 := string(qb422016.B)
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 	return qs422016
-//line templates/resource.qtpl:357
+//line templates/resource.qtpl:354
 }
 
-//line templates/resource.qtpl:359
+//line templates/resource.qtpl:356
 func StreamGenResourcePresenter(qw422016 *qt422016.Writer, moduleName, resourceName string) {
-//line templates/resource.qtpl:359
+//line templates/resource.qtpl:356
 	qw422016.N().S(`package presenter
 
 import (
 	"`)
-//line templates/resource.qtpl:363
+//line templates/resource.qtpl:360
 	qw422016.E().S(moduleName)
-//line templates/resource.qtpl:363
+//line templates/resource.qtpl:360
 	qw422016.N().S(`/entity"
 	"time"
 )
 
 type `)
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.E().S(resourceName)
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S(` struct {
 	ID          entity.ID `)
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S("`")
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S(`json:"id"`)
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S("`")
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S(`
 	CreatedAt   time.Time `)
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S("`")
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S(`json:"createdAt"`)
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S("`")
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S(`
 	UpdatedAt   time.Time `)
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S("`")
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S(`json:"updatedAt"`)
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S("`")
-//line templates/resource.qtpl:367
+//line templates/resource.qtpl:364
 	qw422016.N().S(`
 }
 `)
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 }
 
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 func WriteGenResourcePresenter(qq422016 qtio422016.Writer, moduleName, resourceName string) {
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 	StreamGenResourcePresenter(qw422016, moduleName, resourceName)
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 	qt422016.ReleaseWriter(qw422016)
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 }
 
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 func GenResourcePresenter(moduleName, resourceName string) string {
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 	WriteGenResourcePresenter(qb422016, moduleName, resourceName)
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 	qs422016 := string(qb422016.B)
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 	return qs422016
-//line templates/resource.qtpl:372
+//line templates/resource.qtpl:369
 }

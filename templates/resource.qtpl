@@ -9,7 +9,7 @@ var ErrNotFound = errors.New("not found")
 var ErrInvalidEntity = errors.New("invalid entity")
 {% endfunc %}
 
-{% func GenCustomEntity(name string, fields []string) -%}
+{% func GenCustomEntity(name string) -%}
 {% code lcName := strings.ToLower(name) %}
 package entity
 
@@ -20,9 +20,6 @@ import (
 // {%s name%} data
 type {%s name %} struct {
 	ID        int
-    {%- for _, f := range fields %}
-
-    {% endfor %}
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time
