@@ -11,6 +11,8 @@ builds:
       - CGO_ENABLED=0
     goos:
       - darwin
+      - linux
+      - windows
     binary: igniter
 archives:
   - replacements:

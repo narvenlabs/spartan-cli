@@ -1,13 +1,10 @@
-build: clean generate build-test copy
-
-clean:
-	rm -rf ./dist
+build: generate build-test copy
 
 build-test:
-	goreleaser build --single-target --snapshot
+	goreleaser build --single-target --snapshot --rm-dist
 
 build-prod:
-	goreleaser build
+	goreleaser build --rm-dist
 
 generate:
 	qtc
