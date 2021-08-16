@@ -119,54 +119,54 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			Path: StrPtr(".github"),
 		},
 		{
-			Path:    StrPtr(".github/ISSUE_TEMPLATE.md"),
-			Content: StrPtr(templates.GenGithubIssueTemplate()),
-		},
-		{
-			Path:    StrPtr(".github/PULL_REQUEST_TEMPLATE.md"),
-			Content: StrPtr(templates.GenPullRequestTemplate()),
-		},
-		{
-			Path: StrPtr(".github/workflows"),
-		},
-		{
-			Path:    StrPtr(".github/workflows/ci.yml"),
-			Content: StrPtr(templates.GenGithubCI()),
-		},
-		{
 			Path: StrPtr("pkg"),
-		},
-		{
-			Path: StrPtr("infrastructure/repository"),
 		},
 		{
 			Path: StrPtr("entity"),
 		},
 		{
-			Path:    StrPtr("entity/entity.go"),
-			Content: StrPtr(templates.GenBaseEntity()),
-		},
-		{
 			Path: StrPtr("config"),
-		},
-		{
-			Path:    StrPtr("config/config.go"),
-			Content: StrPtr(templates.GenProjectConfig()),
 		},
 		{
 			Path: StrPtr("api"),
 		},
 		{
-			Path: StrPtr("api/handler"),
+			Path:    StrPtr(filepath.Join(".github", "ISSUE_TEMPLATE.md")),
+			Content: StrPtr(templates.GenGithubIssueTemplate()),
 		},
 		{
-			Path: StrPtr("api/middleware"),
+			Path:    StrPtr(filepath.Join(".github", "PULL_REQUEST_TEMPLATE.md")),
+			Content: StrPtr(templates.GenPullRequestTemplate()),
 		},
 		{
-			Path: StrPtr("api/presenter"),
+			Path: StrPtr(filepath.Join(".github", "workflows")),
 		},
 		{
-			Path:    StrPtr("api/main.go"),
+			Path:    StrPtr(filepath.Join(".github", "workflows", "ci.yml")),
+			Content: StrPtr(templates.GenGithubCI()),
+		},
+		{
+			Path: StrPtr(filepath.Join("infrastructure", "repository")),
+		},
+		{
+			Path:    StrPtr(filepath.Join("entity", "entity.go")),
+			Content: StrPtr(templates.GenBaseEntity()),
+		},
+		{
+			Path:    StrPtr(filepath.Join("config", "config.go")),
+			Content: StrPtr(templates.GenProjectConfig()),
+		},
+		{
+			Path: StrPtr(filepath.Join("api", "handler")),
+		},
+		{
+			Path: StrPtr(filepath.Join("api", "middleware")),
+		},
+		{
+			Path: StrPtr(filepath.Join("api", "presenter")),
+		},
+		{
+			Path:    StrPtr(filepath.Join("api", "main.go")),
 			Content: StrPtr(templates.GenerateApiMain(moduleName, projectName, dbDriver)),
 		},
 		{

@@ -2,9 +2,48 @@
 {% func GenREADME(name string) -%}
 #  {%s name %}
 
+> This project was generated using [igniter-cli](https://github.com/Narven/igniter-cli)
+
 ### Development
 
-> This project was generated using [igniter-cli](https://github.com/Narven/igniter-cli)
+After project generation:
+
+Next steps:
+* `docker-compose up -d` to bring you containers up
+* `make start` or `air` to run environment
+* [http://localhost:9069/ping](http://localhost:9069/ping) to see if API is responding with `200`
+
+### Project Structure
+
+> Igniter tries to follow closely to the "Clean Architecture Go" described by [Elton Minetto](https://twitter.com/eminetto) in this 2 posts [Clean Architecture, 2 years later](https://eltonminetto.dev/en/post/2020-07-06-clean-architecture-2years-later/) and [Clean Architecture using Golang ](https://eltonminetto.dev/en/post/2018-03-05-clean-architecture-using-go/), plus a few more ready to go (pun intended) tooling.
+
+```bash
+api/
+    handler/
+    middleware/
+    presenter/
+    main.go
+config/
+entity/
+infrastructure/
+    repository/
+migrations/
+pkg/
+tmp/
+```
+
+### Tooling
+
+Igniter uses several tools in the background:
+
+* [Air](https://github.com/cosmtrek/air) for "Live reload for Go apps"
+* [Goose](https://github.com/pressly/goose) for database migrations
+* [Sqlx](http://jmoiron.github.io/sqlx/) for improved tooling around sql
+* [Squirel](https://github.com/Masterminds/squirrel) for "Fluent SQL generation for golang"
+* [Gofiber](https://github.com/gofiber/fiber) for all the routing
+
+But you dont need to worry about any of that :)
+
 {% endfunc %}
 
 {% func GenGitignore() -%}
@@ -59,18 +98,18 @@ services:
       - data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: '${DB_DATABASE}'
-      MYSQL_USER: '${DB_USERNAME}'
-      MYSQL_PASSWORD: '${DB_PASSWORD'
+      MYSQL_DATABASE: '${DB_NAME}'
+      MYSQL_USER: '${DB_USER}'
+      MYSQL_PASSWORD: '${DB_PASS}'
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     ports:
       - '${DB_PORT}:3306'
     networks:
-      - {%s projectName%}_network
+      - {%s lcProjectName%}_network
     {%- elseif dbDriver == "postgres" -%}
     image: postgres
     ports:
-      - "5432:5432"
+      - '${DB_PORT}:5432'
     volumes:
       - data:/var/lib/postgresql/data
     {%- endif -%}
@@ -79,18 +118,24 @@ volumes:
   data:
 
 networks:
-  {%s projectName%}_network:
+  {%s lcProjectName%}_network:
     driver: bridge
 {% endfunc %}
 
 {% func GenEnv(projectName ,dbDriver string) -%}
-{% code lcProjectName := strings.ToLower(projectName) %}
-DB_DRIVER=dbDriver
-DB_HOST=mysql
+{%- code lcProjectName := strings.ToLower(projectName) -%}
+DB_DRIVER={%s dbDriver %}
+DB_HOST=localhost
 DB_PORT=3306
-DB_DATABASE={%s lcProjectName %}_dev
-DB_USERNAME={%s lcProjectName %}
-DB_PASSWORD={%s lcProjectName %}
+DB_NAME={%s lcProjectName %}_dev
+DB_USER={%s lcProjectName %}
+DB_PASS={%s lcProjectName %}
+JWT_KEY_PATH=
+SENDGRID_API_KEY=
+SENDGRID_EMAIL=
+SENTRY_DSN=
+SENTRY_RELEASE=
+SENTRY_TRACES_SAMPLE_RATE=
 {% endfunc %}
 
 {% func GenMakeFile(name string) -%}
@@ -234,21 +279,21 @@ func main() {
     {% if dbDriver == "mysql" %}
     dsn := fmt.Sprintf(
         "%s:%s@tcp(%s:%s)/%s?parseTime=true",
-        cfg.DatabaseUser,
-        cfg.DatabasePassword,
-        cfg.DatabaseHost,
-        cfg.DatabasePort,
-        cfg.DatabaseName,
+        cfg.DBUser,
+        cfg.DBPass,
+        cfg.DBHost,
+        cfg.DBPort,
+        cfg.DBName,
     )
     {% elseif dbDriver == "postgres" %}
 
     dsn := fmt.Sprintf(
         "%s:%s@tcp(%s:%s)/%s?sslmode=disable",
-        cfg.DatabaseUser,
-        cfg.DatabasePassword,
-        cfg.DatabaseHost,
-        cfg.DatabasePort,
-        cfg.DatabaseName,
+        cfg.DBUser,
+        cfg.DBPass,
+        cfg.DBHost,
+        cfg.DBPort,
+        cfg.DBName,
     )
     {% endif %}
 
@@ -510,11 +555,12 @@ import (
 )
 
 type Config struct {
-	DatabaseHost           string `mapstructure:"DATABASE_HOST" validate:"required"`
-	DatabaseName           string `mapstructure:"DATABASE_NAME" validate:"required"`
-	DatabasePassword       string `mapstructure:"DATABASE_PASSWORD" validate:"required"`
-	DatabasePort           string `mapstructure:"DATABASE_PORT" validate:"required"`
-	DatabaseUser           string `mapstructure:"DATABASE_USER" validate:"required"`
+    DBDriver               string `mapstructure:"DB_DRIVER"`
+	DBHost                 string `mapstructure:"DB_HOST" validate:"required"`
+	DBName                 string `mapstructure:"DB_NAME" validate:"required"`
+	DBPass                 string `mapstructure:"DB_PASS" validate:"required"`
+	DBPort                 string `mapstructure:"DB_PORT" validate:"required"`
+	DBUser                 string `mapstructure:"DB_USER" validate:"required"`
 	JWTKeyPath             string `mapstructure:"JWT_KEY_PATH" validate:"required"`
 	SendgridAPIKey         string `mapstructure:"SENDGRID_API_KEY" validate:"required"`
 	SendgridEmail          string `mapstructure:"SENDGRID_EMAIL" validate:"required"`

@@ -1,4 +1,4 @@
-build: clean build-test
+build: clean generate build-test copy
 
 clean:
 	rm -rf ./dist
@@ -8,3 +8,9 @@ build-test:
 
 build-prod:
 	goreleaser build
+
+generate:
+	qtc
+
+copy:
+	yes | cp dist/igniter-cli_darwin_amd64/igniter /usr/local/bin/
