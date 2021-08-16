@@ -18,11 +18,12 @@ Next steps:
 > Igniter tries to follow closely to the "Clean Architecture Go" described by [Elton Minetto](https://twitter.com/eminetto) in this 2 posts [Clean Architecture, 2 years later](https://eltonminetto.dev/en/post/2020-07-06-clean-architecture-2years-later/) and [Clean Architecture using Golang ](https://eltonminetto.dev/en/post/2018-03-05-clean-architecture-using-go/), plus a few more ready to go (pun intended) tooling.
 
 ```bash
-api/
-    handler/
-    middleware/
-    presenter/
-    main.go
+transport/
+    http/
+        handler/
+        middleware/
+        presenter/
+        main.go
 config/
 entity/
 infrastructure/
@@ -40,7 +41,7 @@ Igniter uses several tools in the background:
 * [Goose](https://github.com/pressly/goose) for database migrations
 * [Sqlx](http://jmoiron.github.io/sqlx/) for improved tooling around sql
 * [Squirel](https://github.com/Masterminds/squirrel) for "Fluent SQL generation for golang"
-* [Gofiber](https://github.com/gofiber/fiber) for all the routing
+* [GoFiber](https://github.com/gofiber/fiber) for all the routing
 
 But you dont need to worry about any of that :)
 
@@ -160,9 +161,14 @@ BUILD=`git rev-parse HEAD`
 # Setup the -ldflags option for go build here, interpolate the variable values
 LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.Build=${BUILD}"
 
-start:
-	> air -c .air.toml
-	# > go run api/main.go
+start: dcu air
+	# > go run transport/http/main.go
+
+dcu:
+    > docker-compose up -d
+
+dcd:
+    > docker-compose down
 
 build:
 	> go build ${LDFLAGS} -o ${BINARY}
@@ -486,7 +492,7 @@ tmp_dir = "tmp"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "go build -o ./tmp/main api/main.go"
+cmd = "go build -o ./tmp/main transport/http/main.go"
 # Binary file yields from `cmd`.
 bin = "tmp/main"
 # Customize binary.

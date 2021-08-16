@@ -59,6 +59,9 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 		Content *string
 	}
 
+	httpPath := filepath.Join("transport", "http")
+	githubPath := filepath.Join(".github")
+
 	operations := []OperationLogic{
 		{
 			Path:    StrPtr("README.md"),
@@ -116,7 +119,7 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			Path: StrPtr("migrations"),
 		},
 		{
-			Path: StrPtr(".github"),
+			Path: StrPtr(githubPath),
 		},
 		{
 			Path: StrPtr("pkg"),
@@ -128,24 +131,24 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			Path: StrPtr("config"),
 		},
 		{
-			Path: StrPtr("api"),
-		},
-		{
 			Path: StrPtr("usecase"),
 		},
 		{
-			Path:    StrPtr(filepath.Join(".github", "ISSUE_TEMPLATE.md")),
+			Path: StrPtr(httpPath),
+		},
+		{
+			Path:    StrPtr(filepath.Join(githubPath, "ISSUE_TEMPLATE.md")),
 			Content: StrPtr(templates.GenGithubIssueTemplate()),
 		},
 		{
-			Path:    StrPtr(filepath.Join(".github", "PULL_REQUEST_TEMPLATE.md")),
+			Path:    StrPtr(filepath.Join(githubPath, "PULL_REQUEST_TEMPLATE.md")),
 			Content: StrPtr(templates.GenPullRequestTemplate()),
 		},
 		{
-			Path: StrPtr(filepath.Join(".github", "workflows")),
+			Path: StrPtr(filepath.Join(githubPath, "workflows")),
 		},
 		{
-			Path:    StrPtr(filepath.Join(".github", "workflows", "ci.yml")),
+			Path:    StrPtr(filepath.Join(githubPath, "workflows", "ci.yml")),
 			Content: StrPtr(templates.GenGithubCI()),
 		},
 		{
@@ -160,16 +163,16 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			Content: StrPtr(templates.GenProjectConfig()),
 		},
 		{
-			Path: StrPtr(filepath.Join("api", "handler")),
+			Path: StrPtr(filepath.Join(httpPath, "handler")),
 		},
 		{
-			Path: StrPtr(filepath.Join("api", "middleware")),
+			Path: StrPtr(filepath.Join(httpPath, "middleware")),
 		},
 		{
-			Path: StrPtr(filepath.Join("api", "presenter")),
+			Path: StrPtr(filepath.Join(httpPath, "presenter")),
 		},
 		{
-			Path:    StrPtr(filepath.Join("api", "main.go")),
+			Path:    StrPtr(filepath.Join(httpPath, "main.go")),
 			Content: StrPtr(templates.GenerateApiMain(moduleName, projectName, dbDriver)),
 		},
 		{
