@@ -94,9 +94,6 @@ func generateResource(path, name string, fields []string) {
 			Content: StrPtr(templates.GenTestCustomEntity(moduleName, name)),
 		},
 		{
-			Path: StrPtr(filepath.Join(usecasePath, strings.ToLower(name))),
-		},
-		{
 			Path:    StrPtr(filepath.Join(usecasePath, strings.ToLower(name), "interface.go")),
 			Content: StrPtr(templates.GenEntityUsecaseInterface(moduleName, name)),
 		},

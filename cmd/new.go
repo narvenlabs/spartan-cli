@@ -131,6 +131,9 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			Path: StrPtr("api"),
 		},
 		{
+			Path: StrPtr("usecase"),
+		},
+		{
 			Path:    StrPtr(filepath.Join(".github", "ISSUE_TEMPLATE.md")),
 			Content: StrPtr(templates.GenGithubIssueTemplate()),
 		},
