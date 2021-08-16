@@ -1,0 +1,22 @@
+{%- import "strings" -%}
+{% func GenMigration(resourceName string) -%}
+{% code lcResourceName := strings.ToLower(resourceName) %}
+-- +goose Up
+-- +goose StatementBegin
+CREATE TABLE {%s lcResourceName %}
+(
+    id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    created_at TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP    NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+    deleted_at TIMESTAMP    NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci;
+-- +goose StatementEnd
+
+-- +goose Down
+-- +goose StatementBegin
+DROP TABLE IF EXISTS {%s lcResourceName %};
+-- +goose StatementEnd
+{% endfunc %}
