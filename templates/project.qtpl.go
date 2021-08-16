@@ -5,62 +5,66 @@
 package templates
 
 //line templates/project.qtpl:1
+import "strings"
+
+//line templates/project.qtpl:2
 import (
 	qtio422016 "io"
 
 	qt422016 "github.com/valyala/quicktemplate"
 )
 
-//line templates/project.qtpl:1
+//line templates/project.qtpl:2
 var (
 	_ = qtio422016.Copy
 	_ = qt422016.AcquireByteBuffer
 )
 
-//line templates/project.qtpl:1
+//line templates/project.qtpl:2
 func StreamGenREADME(qw422016 *qt422016.Writer, name string) {
-//line templates/project.qtpl:1
+//line templates/project.qtpl:2
 	qw422016.N().S(`#  `)
-//line templates/project.qtpl:2
+//line templates/project.qtpl:3
 	qw422016.E().S(name)
-//line templates/project.qtpl:2
+//line templates/project.qtpl:3
 	qw422016.N().S(`
 
+### Development
+
 > This project was generated using [igniter-cli](https://github.com/Narven/igniter-cli)
-
 `)
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 }
 
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 func WriteGenREADME(qq422016 qtio422016.Writer, name string) {
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 	StreamGenREADME(qw422016, name)
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 }
 
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 func GenREADME(name string) string {
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 	WriteGenREADME(qb422016, name)
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 	return qs422016
-//line templates/project.qtpl:6
+//line templates/project.qtpl:8
 }
 
-//line templates/project.qtpl:8
+//line templates/project.qtpl:10
 func StreamGenGitignore(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:8
+//line templates/project.qtpl:10
 	qw422016.N().S(`dist
 build
 tmp
@@ -85,42 +89,42 @@ node_modules
 # Go
 vendor/
 `)
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 }
 
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 func WriteGenGitignore(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 	StreamGenGitignore(qw422016)
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 }
 
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 func GenGitignore() string {
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 	WriteGenGitignore(qb422016)
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 	return qs422016
-//line templates/project.qtpl:32
+//line templates/project.qtpl:34
 }
 
-//line templates/project.qtpl:34
+//line templates/project.qtpl:36
 func StreamGenGoMod(qw422016 *qt422016.Writer, moduleName string) {
-//line templates/project.qtpl:34
+//line templates/project.qtpl:36
 	qw422016.N().S(`module `)
-//line templates/project.qtpl:35
+//line templates/project.qtpl:37
 	qw422016.E().S(moduleName)
-//line templates/project.qtpl:35
+//line templates/project.qtpl:37
 	qw422016.N().S(`
 
 go 1.15
@@ -133,54 +137,53 @@ require (
 )
 
 `)
-//line templates/project.qtpl:46
-}
-
-//line templates/project.qtpl:46
-func WriteGenGoMod(qq422016 qtio422016.Writer, moduleName string) {
-//line templates/project.qtpl:46
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:46
-	StreamGenGoMod(qw422016, moduleName)
-//line templates/project.qtpl:46
-	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:46
-}
-
-//line templates/project.qtpl:46
-func GenGoMod(moduleName string) string {
-//line templates/project.qtpl:46
-	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:46
-	WriteGenGoMod(qb422016, moduleName)
-//line templates/project.qtpl:46
-	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:46
-	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:46
-	return qs422016
-//line templates/project.qtpl:46
+//line templates/project.qtpl:48
 }
 
 //line templates/project.qtpl:48
+func WriteGenGoMod(qq422016 qtio422016.Writer, moduleName string) {
+//line templates/project.qtpl:48
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line templates/project.qtpl:48
+	StreamGenGoMod(qw422016, moduleName)
+//line templates/project.qtpl:48
+	qt422016.ReleaseWriter(qw422016)
+//line templates/project.qtpl:48
+}
+
+//line templates/project.qtpl:48
+func GenGoMod(moduleName string) string {
+//line templates/project.qtpl:48
+	qb422016 := qt422016.AcquireByteBuffer()
+//line templates/project.qtpl:48
+	WriteGenGoMod(qb422016, moduleName)
+//line templates/project.qtpl:48
+	qs422016 := string(qb422016.B)
+//line templates/project.qtpl:48
+	qt422016.ReleaseByteBuffer(qb422016)
+//line templates/project.qtpl:48
+	return qs422016
+//line templates/project.qtpl:48
+}
+
+//line templates/project.qtpl:50
 func StreamGenDockerCompose(qw422016 *qt422016.Writer, projectName, dbDriver string) {
-//line templates/project.qtpl:49
+//line templates/project.qtpl:51
 	lcProjectName := strings.ToLower(projectName)
 
-//line templates/project.qtpl:49
-	qw422016.N().S(`
-version: '3.8'
+//line templates/project.qtpl:51
+	qw422016.N().S(`version: '3.8'
 services:
   database:
     container_name: `)
-//line templates/project.qtpl:53
+//line templates/project.qtpl:55
 	qw422016.E().S(lcProjectName)
-//line templates/project.qtpl:53
+//line templates/project.qtpl:55
 	qw422016.N().S(`-database
 `)
-//line templates/project.qtpl:54
+//line templates/project.qtpl:56
 	if dbDriver == "mysql" {
-//line templates/project.qtpl:54
+//line templates/project.qtpl:56
 		qw422016.N().S(`    image: 'mysql:8.0'
     volumes:
       - data:/var/lib/mysql
@@ -194,125 +197,125 @@ services:
       - '${DB_PORT}:3306'
     networks:
       - `)
-//line templates/project.qtpl:67
+//line templates/project.qtpl:69
 		qw422016.E().S(projectName)
-//line templates/project.qtpl:67
+//line templates/project.qtpl:69
 		qw422016.N().S(`_network
 `)
-//line templates/project.qtpl:68
+//line templates/project.qtpl:70
 	} else if dbDriver == "postgres" {
-//line templates/project.qtpl:68
+//line templates/project.qtpl:70
 		qw422016.N().S(`    image: postgres
     ports:
       - "5432:5432"
     volumes:
       - data:/var/lib/postgresql/data
 `)
-//line templates/project.qtpl:74
+//line templates/project.qtpl:76
 	}
-//line templates/project.qtpl:74
+//line templates/project.qtpl:76
 	qw422016.N().S(`
 volumes:
   data:
 
 networks:
   `)
-//line templates/project.qtpl:80
+//line templates/project.qtpl:82
 	qw422016.E().S(projectName)
-//line templates/project.qtpl:80
+//line templates/project.qtpl:82
 	qw422016.N().S(`_network:
     driver: bridge
 `)
-//line templates/project.qtpl:82
-}
-
-//line templates/project.qtpl:82
-func WriteGenDockerCompose(qq422016 qtio422016.Writer, projectName, dbDriver string) {
-//line templates/project.qtpl:82
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:82
-	StreamGenDockerCompose(qw422016, projectName, dbDriver)
-//line templates/project.qtpl:82
-	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:82
-}
-
-//line templates/project.qtpl:82
-func GenDockerCompose(projectName, dbDriver string) string {
-//line templates/project.qtpl:82
-	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:82
-	WriteGenDockerCompose(qb422016, projectName, dbDriver)
-//line templates/project.qtpl:82
-	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:82
-	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:82
-	return qs422016
-//line templates/project.qtpl:82
+//line templates/project.qtpl:84
 }
 
 //line templates/project.qtpl:84
+func WriteGenDockerCompose(qq422016 qtio422016.Writer, projectName, dbDriver string) {
+//line templates/project.qtpl:84
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line templates/project.qtpl:84
+	StreamGenDockerCompose(qw422016, projectName, dbDriver)
+//line templates/project.qtpl:84
+	qt422016.ReleaseWriter(qw422016)
+//line templates/project.qtpl:84
+}
+
+//line templates/project.qtpl:84
+func GenDockerCompose(projectName, dbDriver string) string {
+//line templates/project.qtpl:84
+	qb422016 := qt422016.AcquireByteBuffer()
+//line templates/project.qtpl:84
+	WriteGenDockerCompose(qb422016, projectName, dbDriver)
+//line templates/project.qtpl:84
+	qs422016 := string(qb422016.B)
+//line templates/project.qtpl:84
+	qt422016.ReleaseByteBuffer(qb422016)
+//line templates/project.qtpl:84
+	return qs422016
+//line templates/project.qtpl:84
+}
+
+//line templates/project.qtpl:86
 func StreamGenEnv(qw422016 *qt422016.Writer, projectName, dbDriver string) {
-//line templates/project.qtpl:85
+//line templates/project.qtpl:87
 	lcProjectName := strings.ToLower(projectName)
 
-//line templates/project.qtpl:85
+//line templates/project.qtpl:87
 	qw422016.N().S(`
 DB_DRIVER=dbDriver
 DB_HOST=mysql
 DB_PORT=3306
 DB_DATABASE=`)
-//line templates/project.qtpl:89
+//line templates/project.qtpl:91
 	qw422016.E().S(lcProjectName)
-//line templates/project.qtpl:89
+//line templates/project.qtpl:91
 	qw422016.N().S(`_dev
 DB_USERNAME=`)
-//line templates/project.qtpl:90
+//line templates/project.qtpl:92
 	qw422016.E().S(lcProjectName)
-//line templates/project.qtpl:90
+//line templates/project.qtpl:92
 	qw422016.N().S(`
 DB_PASSWORD=`)
-//line templates/project.qtpl:91
+//line templates/project.qtpl:93
 	qw422016.E().S(lcProjectName)
-//line templates/project.qtpl:91
+//line templates/project.qtpl:93
 	qw422016.N().S(`
 `)
-//line templates/project.qtpl:92
-}
-
-//line templates/project.qtpl:92
-func WriteGenEnv(qq422016 qtio422016.Writer, projectName, dbDriver string) {
-//line templates/project.qtpl:92
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:92
-	StreamGenEnv(qw422016, projectName, dbDriver)
-//line templates/project.qtpl:92
-	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:92
-}
-
-//line templates/project.qtpl:92
-func GenEnv(projectName, dbDriver string) string {
-//line templates/project.qtpl:92
-	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:92
-	WriteGenEnv(qb422016, projectName, dbDriver)
-//line templates/project.qtpl:92
-	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:92
-	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:92
-	return qs422016
-//line templates/project.qtpl:92
+//line templates/project.qtpl:94
 }
 
 //line templates/project.qtpl:94
+func WriteGenEnv(qq422016 qtio422016.Writer, projectName, dbDriver string) {
+//line templates/project.qtpl:94
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line templates/project.qtpl:94
+	StreamGenEnv(qw422016, projectName, dbDriver)
+//line templates/project.qtpl:94
+	qt422016.ReleaseWriter(qw422016)
+//line templates/project.qtpl:94
+}
+
+//line templates/project.qtpl:94
+func GenEnv(projectName, dbDriver string) string {
+//line templates/project.qtpl:94
+	qb422016 := qt422016.AcquireByteBuffer()
+//line templates/project.qtpl:94
+	WriteGenEnv(qb422016, projectName, dbDriver)
+//line templates/project.qtpl:94
+	qs422016 := string(qb422016.B)
+//line templates/project.qtpl:94
+	qt422016.ReleaseByteBuffer(qb422016)
+//line templates/project.qtpl:94
+	return qs422016
+//line templates/project.qtpl:94
+}
+
+//line templates/project.qtpl:96
 func StreamGenMakeFile(qw422016 *qt422016.Writer, name string) {
-//line templates/project.qtpl:95
+//line templates/project.qtpl:97
 	lcName := strings.ToLower(name)
 
-//line templates/project.qtpl:95
+//line templates/project.qtpl:97
 	qw422016.N().S(`
 .RECIPEPREFIX = >
 .PHONY: all
@@ -326,21 +329,21 @@ GOGET=$(GO) get
 
 # This how we want to name the binary output
 BINARY=`)
-//line templates/project.qtpl:107
+//line templates/project.qtpl:109
 	qw422016.E().S(lcName)
-//line templates/project.qtpl:107
+//line templates/project.qtpl:109
 	qw422016.N().S(`
 
 # These are the values we want to pass for VERSION and BUILD
 VERSION=0.0.1
 BUILD=`)
-//line templates/project.qtpl:107
+//line templates/project.qtpl:109
 	qw422016.N().S("`")
-//line templates/project.qtpl:107
+//line templates/project.qtpl:109
 	qw422016.N().S(`git rev-parse HEAD`)
-//line templates/project.qtpl:107
+//line templates/project.qtpl:109
 	qw422016.N().S("`")
-//line templates/project.qtpl:107
+//line templates/project.qtpl:109
 	qw422016.N().S(`
 
 # Setup the -ldflags option for go build here, interpolate the variable values
@@ -361,47 +364,47 @@ fmt: ## Format source code with gofmt
 
 help:
 	> @echo "Help: `)
-//line templates/project.qtpl:130
+//line templates/project.qtpl:132
 	qw422016.E().S(name)
-//line templates/project.qtpl:130
+//line templates/project.qtpl:132
 	qw422016.N().S(` root Makefile"
 	> @echo "Usage: make [TARGET] [EXTRA_ARGUMENTS]"
 	> @echo "Targets:"
 	> @echo "~> start					- starts the application"
 
 `)
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 }
 
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 func WriteGenMakeFile(qq422016 qtio422016.Writer, name string) {
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 	StreamGenMakeFile(qw422016, name)
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 }
 
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 func GenMakeFile(name string) string {
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 	WriteGenMakeFile(qb422016, name)
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 	return qs422016
-//line templates/project.qtpl:135
+//line templates/project.qtpl:137
 }
 
-//line templates/project.qtpl:137
+//line templates/project.qtpl:139
 func StreamGenEditorConfig(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:137
+//line templates/project.qtpl:139
 	qw422016.N().S(`root = true
 
 [*]
@@ -442,38 +445,38 @@ indent_size = 2
 indent_size = 1
 
 `)
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 }
 
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 func WriteGenEditorConfig(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 	StreamGenEditorConfig(qw422016)
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 }
 
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 func GenEditorConfig() string {
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 	WriteGenEditorConfig(qb422016)
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 	return qs422016
-//line templates/project.qtpl:177
+//line templates/project.qtpl:179
 }
 
-//line templates/project.qtpl:179
+//line templates/project.qtpl:181
 func StreamGenDockerIgnore(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:179
+//line templates/project.qtpl:181
 	qw422016.N().S(`*.log
 bin/
 !go.sum
@@ -482,38 +485,38 @@ vendor/
 coverage.out
 coverage.txt
 `)
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 }
 
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 func WriteGenDockerIgnore(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 	StreamGenDockerIgnore(qw422016)
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 }
 
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 func GenDockerIgnore() string {
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 	WriteGenDockerIgnore(qb422016)
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 	return qs422016
-//line templates/project.qtpl:187
+//line templates/project.qtpl:189
 }
 
-//line templates/project.qtpl:189
+//line templates/project.qtpl:191
 func StreamGenDockerfile(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:189
+//line templates/project.qtpl:191
 	qw422016.N().S(`FROM golang:1.16.2-alpine3.13 as modules
 COPY go.mod go.sum /modules/
 WORKDIR /modules
@@ -533,45 +536,45 @@ COPY --from=builder /bin/app /app
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 CMD ["/app"]
 `)
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 }
 
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 func WriteGenDockerfile(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 	StreamGenDockerfile(qw422016)
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 }
 
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 func GenDockerfile() string {
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 	WriteGenDockerfile(qb422016)
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 	return qs422016
-//line templates/project.qtpl:208
+//line templates/project.qtpl:210
 }
 
-//line templates/project.qtpl:210
+//line templates/project.qtpl:212
 func StreamGenerateApiMain(qw422016 *qt422016.Writer, moduleName, projectName, dbDriver string) {
-//line templates/project.qtpl:210
+//line templates/project.qtpl:212
 	qw422016.N().S(`package main
 
 import (
     "`)
-//line templates/project.qtpl:214
+//line templates/project.qtpl:216
 	qw422016.E().S(moduleName)
-//line templates/project.qtpl:214
+//line templates/project.qtpl:216
 	qw422016.N().S(`/config"
     "fmt"
     "log"
@@ -591,9 +594,9 @@ func main() {
     }
 
     `)
-//line templates/project.qtpl:232
+//line templates/project.qtpl:234
 	if dbDriver == "mysql" {
-//line templates/project.qtpl:232
+//line templates/project.qtpl:234
 		qw422016.N().S(`
     dsn := fmt.Sprintf(
         "%s:%s@tcp(%s:%s)/%s?parseTime=true",
@@ -604,9 +607,9 @@ func main() {
         cfg.DatabaseName,
     )
     `)
-//line templates/project.qtpl:241
+//line templates/project.qtpl:243
 	} else if dbDriver == "postgres" {
-//line templates/project.qtpl:241
+//line templates/project.qtpl:243
 		qw422016.N().S(`
 
     dsn := fmt.Sprintf(
@@ -618,15 +621,15 @@ func main() {
         cfg.DatabaseName,
     )
     `)
-//line templates/project.qtpl:251
+//line templates/project.qtpl:253
 	}
-//line templates/project.qtpl:251
+//line templates/project.qtpl:253
 	qw422016.N().S(`
 
     db, err := sqlx.Connect("`)
-//line templates/project.qtpl:253
+//line templates/project.qtpl:255
 	qw422016.E().S(dbDriver)
-//line templates/project.qtpl:253
+//line templates/project.qtpl:255
 	qw422016.N().S(`", dsn)
     if err != nil {
         log.Fatal(err.Error())
@@ -654,129 +657,129 @@ func main() {
     log.Fatal(app.Listen(fmt.Sprintf(":%d", 9069)))
 }
 `)
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 }
 
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 func WriteGenerateApiMain(qq422016 qtio422016.Writer, moduleName, projectName, dbDriver string) {
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 	StreamGenerateApiMain(qw422016, moduleName, projectName, dbDriver)
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 }
 
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 func GenerateApiMain(moduleName, projectName, dbDriver string) string {
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 	WriteGenerateApiMain(qb422016, moduleName, projectName, dbDriver)
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 	return qs422016
-//line templates/project.qtpl:279
+//line templates/project.qtpl:281
 }
 
-//line templates/project.qtpl:281
-func StreamGenWelcomeMsg(qw422016 *qt422016.Writer, name string) {
-//line templates/project.qtpl:281
+//line templates/project.qtpl:283
+func StreamGenWelcomeMsg(qw422016 *qt422016.Writer, projectName string) {
+//line templates/project.qtpl:283
 	qw422016.N().S(`
 
 🔥️ Project `)
-//line templates/project.qtpl:283
-	qw422016.E().S(name)
-//line templates/project.qtpl:283
+//line templates/project.qtpl:285
+	qw422016.E().S(projectName)
+//line templates/project.qtpl:285
 	qw422016.N().S(` generated successfully
 
 Next steps:
 
-    * '\033[0;36m'cd `)
-//line templates/project.qtpl:287
-	qw422016.E().S(name)
-//line templates/project.qtpl:287
-	qw422016.N().S(`'\033[0;36m'
+    * cd `)
+//line templates/project.qtpl:289
+	qw422016.E().S(projectName)
+//line templates/project.qtpl:289
+	qw422016.N().S(`
     * make start
 `)
-//line templates/project.qtpl:289
+//line templates/project.qtpl:291
 }
 
-//line templates/project.qtpl:289
-func WriteGenWelcomeMsg(qq422016 qtio422016.Writer, name string) {
-//line templates/project.qtpl:289
+//line templates/project.qtpl:291
+func WriteGenWelcomeMsg(qq422016 qtio422016.Writer, projectName string) {
+//line templates/project.qtpl:291
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:289
-	StreamGenWelcomeMsg(qw422016, name)
-//line templates/project.qtpl:289
+//line templates/project.qtpl:291
+	StreamGenWelcomeMsg(qw422016, projectName)
+//line templates/project.qtpl:291
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:289
+//line templates/project.qtpl:291
 }
 
-//line templates/project.qtpl:289
-func GenWelcomeMsg(name string) string {
-//line templates/project.qtpl:289
+//line templates/project.qtpl:291
+func GenWelcomeMsg(projectName string) string {
+//line templates/project.qtpl:291
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:289
-	WriteGenWelcomeMsg(qb422016, name)
-//line templates/project.qtpl:289
+//line templates/project.qtpl:291
+	WriteGenWelcomeMsg(qb422016, projectName)
+//line templates/project.qtpl:291
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:289
+//line templates/project.qtpl:291
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:289
+//line templates/project.qtpl:291
 	return qs422016
-//line templates/project.qtpl:289
+//line templates/project.qtpl:291
 }
 
-//line templates/project.qtpl:291
+//line templates/project.qtpl:293
 func StreamGenBaseEntity(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:291
+//line templates/project.qtpl:293
 	qw422016.N().S(`package entity
 
 type ID = int64
 `)
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 }
 
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 func WriteGenBaseEntity(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 	StreamGenBaseEntity(qw422016)
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 }
 
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 func GenBaseEntity() string {
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 	WriteGenBaseEntity(qb422016)
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 	return qs422016
-//line templates/project.qtpl:295
+//line templates/project.qtpl:297
 }
 
-//line templates/project.qtpl:297
+//line templates/project.qtpl:299
 func StreamGenMITLicense(qw422016 *qt422016.Writer, year int) {
-//line templates/project.qtpl:297
+//line templates/project.qtpl:299
 	qw422016.N().S(`MIT License
 
 Copyright (c) `)
-//line templates/project.qtpl:300
+//line templates/project.qtpl:302
 	qw422016.N().D(year)
-//line templates/project.qtpl:300
+//line templates/project.qtpl:302
 	qw422016.N().S(`
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -797,73 +800,73 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 `)
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 }
 
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 func WriteGenMITLicense(qq422016 qtio422016.Writer, year int) {
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 	StreamGenMITLicense(qw422016, year)
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 }
 
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 func GenMITLicense(year int) string {
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 	WriteGenMITLicense(qb422016, year)
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 	return qs422016
-//line templates/project.qtpl:319
+//line templates/project.qtpl:321
 }
 
-//line templates/project.qtpl:321
+//line templates/project.qtpl:323
 func StreamGenGithubIssueTemplate(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:321
+//line templates/project.qtpl:323
 	qw422016.N().S(`### Issue report
 
 `)
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 }
 
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 func WriteGenGithubIssueTemplate(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 	StreamGenGithubIssueTemplate(qw422016)
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 }
 
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 func GenGithubIssueTemplate() string {
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 	WriteGenGithubIssueTemplate(qb422016)
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 	return qs422016
-//line templates/project.qtpl:324
+//line templates/project.qtpl:326
 }
 
-//line templates/project.qtpl:326
+//line templates/project.qtpl:328
 func StreamGenPullRequestTemplate(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:326
+//line templates/project.qtpl:328
 	qw422016.N().S(`### What did you implement:
 
 Closes #XXXXX
@@ -881,22 +884,22 @@ Closes #XXXXX
 - [ ] Write documentation
 - [ ] Check that there aren't other open pull requests for the same issue/feature
 - [ ] Format your source code by `)
-//line templates/project.qtpl:326
+//line templates/project.qtpl:328
 	qw422016.N().S("`")
-//line templates/project.qtpl:326
+//line templates/project.qtpl:328
 	qw422016.N().S(`make fmt`)
-//line templates/project.qtpl:326
+//line templates/project.qtpl:328
 	qw422016.N().S("`")
-//line templates/project.qtpl:326
+//line templates/project.qtpl:328
 	qw422016.N().S(`
 - [ ] Pass the test by `)
-//line templates/project.qtpl:326
+//line templates/project.qtpl:328
 	qw422016.N().S("`")
-//line templates/project.qtpl:326
+//line templates/project.qtpl:328
 	qw422016.N().S(`make test`)
-//line templates/project.qtpl:326
+//line templates/project.qtpl:328
 	qw422016.N().S("`")
-//line templates/project.qtpl:326
+//line templates/project.qtpl:328
 	qw422016.N().S(`
 - [ ] Provide verification config / commands
 - [ ] Enable "Allow edits from maintainers" for this PR
@@ -906,38 +909,38 @@ Closes #XXXXX
 
 **Is it a breaking change?:** No
 `)
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 }
 
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 func WriteGenPullRequestTemplate(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 	StreamGenPullRequestTemplate(qw422016)
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 }
 
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 func GenPullRequestTemplate() string {
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 	WriteGenPullRequestTemplate(qb422016)
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 	return qs422016
-//line templates/project.qtpl:352
+//line templates/project.qtpl:354
 }
 
-//line templates/project.qtpl:354
+//line templates/project.qtpl:356
 func StreamGenGithubCI(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:354
+//line templates/project.qtpl:356
 	qw422016.N().S(`name: CI
 
 on:
@@ -989,38 +992,38 @@ jobs:
         run: make tests
 
 `)
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 }
 
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 func WriteGenGithubCI(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 	StreamGenGithubCI(qw422016)
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 }
 
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 func GenGithubCI() string {
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 	WriteGenGithubCI(qb422016)
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 	return qs422016
-//line templates/project.qtpl:405
+//line templates/project.qtpl:407
 }
 
-//line templates/project.qtpl:407
+//line templates/project.qtpl:409
 func StreamGenTravis(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:407
+//line templates/project.qtpl:409
 	qw422016.N().S(`language: go
 sudo: false
 
@@ -1046,38 +1049,38 @@ script:
 # notifications:
 #  email: false
 `)
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 }
 
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 func WriteGenTravis(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 	StreamGenTravis(qw422016)
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 }
 
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 func GenTravis() string {
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 	WriteGenTravis(qb422016)
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 	return qs422016
-//line templates/project.qtpl:432
+//line templates/project.qtpl:434
 }
 
-//line templates/project.qtpl:434
+//line templates/project.qtpl:436
 func StreamGenAirToml(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:434
+//line templates/project.qtpl:436
 	qw422016.N().S(`# Working directory
 # . or absolute path, please note that the directories following must be under root.
 root = "."
@@ -1085,23 +1088,23 @@ tmp_dir = "tmp"
 
 [build]
 # Just plain old shell command. You could use `)
-//line templates/project.qtpl:434
+//line templates/project.qtpl:436
 	qw422016.N().S("`")
-//line templates/project.qtpl:434
+//line templates/project.qtpl:436
 	qw422016.N().S(`make`)
-//line templates/project.qtpl:434
+//line templates/project.qtpl:436
 	qw422016.N().S("`")
-//line templates/project.qtpl:434
+//line templates/project.qtpl:436
 	qw422016.N().S(` as well.
 cmd = "go build -o ./tmp/main api/main.go"
 # Binary file yields from `)
-//line templates/project.qtpl:434
+//line templates/project.qtpl:436
 	qw422016.N().S("`")
-//line templates/project.qtpl:434
+//line templates/project.qtpl:436
 	qw422016.N().S(`cmd`)
-//line templates/project.qtpl:434
+//line templates/project.qtpl:436
 	qw422016.N().S("`")
-//line templates/project.qtpl:434
+//line templates/project.qtpl:436
 	qw422016.N().S(`.
 bin = "tmp/main"
 # Customize binary.
@@ -1146,112 +1149,112 @@ runner = "green"
 # Delete tmp directory on exit
 clean_on_exit = true
 `)
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 }
 
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 func WriteGenAirToml(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 	StreamGenAirToml(qw422016)
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 }
 
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 func GenAirToml() string {
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 	WriteGenAirToml(qb422016)
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 	return qs422016
-//line templates/project.qtpl:486
+//line templates/project.qtpl:488
 }
 
-//line templates/project.qtpl:488
+//line templates/project.qtpl:490
 func StreamGenAuthors(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:488
+//line templates/project.qtpl:490
 	qw422016.N().S(`# This file lists all individuals having contributed content to the repository.
 
 FirstName LastName <FirstName.LastName@provider.com>
 `)
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 }
 
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 func WriteGenAuthors(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 	StreamGenAuthors(qw422016)
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 }
 
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 func GenAuthors() string {
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 	WriteGenAuthors(qb422016)
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 	return qs422016
-//line templates/project.qtpl:492
+//line templates/project.qtpl:494
 }
 
-//line templates/project.qtpl:494
+//line templates/project.qtpl:496
 func StreamGenGitAttributes(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:494
+//line templates/project.qtpl:496
 	qw422016.N().S(`# Auto detect text files and perform LF normalization
 * text=auto
 
 # Reduce conflicts on markdown files
 *.md merge=union
 `)
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 }
 
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 func WriteGenGitAttributes(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 	StreamGenGitAttributes(qw422016)
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 }
 
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 func GenGitAttributes() string {
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 	WriteGenGitAttributes(qb422016)
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 	return qs422016
-//line templates/project.qtpl:500
+//line templates/project.qtpl:502
 }
 
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 func StreamGenProjectConfig(qw422016 *qt422016.Writer) {
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`package config
 
 import (
@@ -1261,103 +1264,103 @@ import (
 
 type Config struct {
 	DatabaseHost           string `)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`mapstructure:"DATABASE_HOST" validate:"required"`)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`
 	DatabaseName           string `)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`mapstructure:"DATABASE_NAME" validate:"required"`)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`
 	DatabasePassword       string `)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`mapstructure:"DATABASE_PASSWORD" validate:"required"`)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`
 	DatabasePort           string `)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`mapstructure:"DATABASE_PORT" validate:"required"`)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`
 	DatabaseUser           string `)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`mapstructure:"DATABASE_USER" validate:"required"`)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`
 	JWTKeyPath             string `)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`mapstructure:"JWT_KEY_PATH" validate:"required"`)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`
 	SendgridAPIKey         string `)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`mapstructure:"SENDGRID_API_KEY" validate:"required"`)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`
 	SendgridEmail          string `)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`mapstructure:"SENDGRID_EMAIL" validate:"required"`)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`
 	SentryDSN              string `)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`mapstructure:"SENTRY_DSN"`)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`
 	SentryRelease          string `)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`mapstructure:"SENTRY_RELEASE"`)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`
 	SentryTracesSampleRate string `)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`mapstructure:"SENTRY_TRACES_SAMPLE_RATE"`)
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S("`")
-//line templates/project.qtpl:502
+//line templates/project.qtpl:504
 	qw422016.N().S(`
 }
 
@@ -1379,31 +1382,31 @@ func LoadConfig() (config Config, err error) {
 	return
 }
 `)
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 }
 
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 func WriteGenProjectConfig(qq422016 qtio422016.Writer) {
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 	StreamGenProjectConfig(qw422016)
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 	qt422016.ReleaseWriter(qw422016)
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 }
 
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 func GenProjectConfig() string {
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 	WriteGenProjectConfig(qb422016)
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 	qs422016 := string(qb422016.B)
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 	return qs422016
-//line templates/project.qtpl:541
+//line templates/project.qtpl:543
 }

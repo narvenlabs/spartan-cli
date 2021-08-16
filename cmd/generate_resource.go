@@ -26,6 +26,10 @@ var resourcesCmd = &cobra.Command{
 			log.Fatal("Name is required")
 		}
 		path, _ := cmd.Flags().GetString("path")
+		if path == "" {
+			currWd, _ := os.Getwd()
+			path = currWd
+		}
 
 		// -f "username:string, email:string:unique"
 		fieldList, _ := cmd.Flags().GetString("fields")

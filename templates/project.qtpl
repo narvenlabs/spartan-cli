@@ -1,8 +1,10 @@
+{% import "strings" %}
 {% func GenREADME(name string) -%}
 #  {%s name %}
 
-> This project was generated using [igniter-cli](https://github.com/Narven/igniter-cli)
+### Development
 
+> This project was generated using [igniter-cli](https://github.com/Narven/igniter-cli)
 {% endfunc %}
 
 {% func GenGitignore() -%}
@@ -46,7 +48,7 @@ require (
 {% endfunc %}
 
 {% func GenDockerCompose(projectName, dbDriver string) -%}
-{% code lcProjectName := strings.ToLower(projectName) %}
+{%- code lcProjectName := strings.ToLower(projectName) -%}
 version: '3.8'
 services:
   database:
@@ -278,13 +280,13 @@ func main() {
 }
 {% endfunc %}
 
-{% func GenWelcomeMsg(name string) %}
+{% func GenWelcomeMsg(projectName string) %}
 
-🔥️ Project {%s name %} generated successfully
+🔥️ Project {%s projectName %} generated successfully
 
 Next steps:
 
-    * '\033[0;36m'cd {%s name %}'\033[0;36m'
+    * cd {%s projectName %}
     * make start
 {% endfunc %}
 
