@@ -1,6 +1,12 @@
 language: go
 sudo: false
 
+branches:
+    only:
+    - develop
+    - master
+    - stable
+
 matrix:
     include:
         - go: 1.x
