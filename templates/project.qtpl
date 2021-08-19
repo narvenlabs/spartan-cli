@@ -1,4 +1,17 @@
 {% import "strings" %}
+
+{% func GenSpartanConfig(projectName string, moduleName string) -%}
+title = "{%s projectName %}"
+
+[spartan]
+api = true
+web = false
+driver = "mysql"
+
+[locales]
+data = false
+{% endfunc %}
+
 {% func GenREADME(name string) -%}
 #  {%s name %}
 
@@ -141,7 +154,6 @@ SENTRY_TRACES_SAMPLE_RATE=
 
 {% func GenMakeFile(name string) -%}
 {% code lcName := strings.ToLower(name) %}
-.RECIPEPREFIX = >
 .PHONY: all
 .DEFAULT_GOAL := help
 
@@ -164,27 +176,29 @@ LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.Build=${BUILD}"
 start: dcu air
 	# > go run transport/http/main.go
 
+air:
+	air
+
 dcu:
-    > docker-compose up -d
+	docker-compose up -d
 
 dcd:
-    > docker-compose down
+	docker-compose down
 
 build:
-	> go build ${LDFLAGS} -o ${BINARY}
+	go build ${LDFLAGS} -o ${BINARY}
 
 deps: ## Download dependencies
-	> go mod tidy
+	go mod tidy
 
 fmt: ## Format source code with gofmt
-	> find . -name "*.go" -exec gofmt -s -w {} \;
+	find . -name "*.go" -exec gofmt -s -w {} \;
 
 help:
-	> @echo "Help: {%s name %} root Makefile"
-	> @echo "Usage: make [TARGET] [EXTRA_ARGUMENTS]"
-	> @echo "Targets:"
-	> @echo "~> start					- starts the application"
-
+	@echo "Help: {%s name %} root Makefile"
+	@echo "Usage: make [TARGET] [EXTRA_ARGUMENTS]"
+	@echo "Targets:"
+	@echo "~> start					- starts the application"
 {% endfunc %}
 
 {% func GenEditorConfig() -%}
@@ -333,7 +347,7 @@ func main() {
 
 {% func GenWelcomeMsg(projectName string) %}
 
-🔥️ Project {%s projectName %} generated successfully
+⚔️️ Project {%s projectName %} generated successfully
 
 Next steps:
 
@@ -492,7 +506,7 @@ tmp_dir = "tmp"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "go build -o ./tmp/main transport/http/main.go"
+cmd = "go build -o ./tmp/main cmd/main.go"
 # Binary file yields from `cmd`.
 bin = "tmp/main"
 # Customize binary.

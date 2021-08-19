@@ -134,6 +134,19 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			Path: StrPtr("usecase"),
 		},
 		{
+			Path: StrPtr("locales"),
+		},
+		{
+			Path: StrPtr("locales"),
+		},
+		{
+			Path: StrPtr("public"),
+		},
+		{
+			Path:    StrPtr(".spartan.toml"),
+			Content: StrPtr(templates.GenSpartanConfig(projectName, moduleName)),
+		},
+		{
 			Path: StrPtr(httpPath),
 		},
 		{
@@ -172,7 +185,10 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			Path: StrPtr(filepath.Join(httpPath, "presenter")),
 		},
 		{
-			Path:    StrPtr(filepath.Join(httpPath, "main.go")),
+			Path: StrPtr("cmd"),
+		},
+		{
+			Path:    StrPtr(filepath.Join("cmd", "main.go")),
 			Content: StrPtr(templates.GenerateApiMain(moduleName, projectName, dbDriver)),
 		},
 		{
@@ -186,7 +202,10 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			continue
 		}
 
+		fmt.Println(fmt.Sprintf("~> create: %s", *o.Path))
+
 		if o.Content != nil { // its a file
+
 			f, err := os.Create(filepath.Join(p, *o.Path))
 			if err != nil {
 				log.Fatal(err)
@@ -207,6 +226,8 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 		}
 	}
 
+	fmt.Println("DONE. ⚔️")
+
 	args := []string{"mod", "tidy"}
 	cmd := exec.Command("go", args...)
 	cmd.Dir = p
@@ -218,8 +239,10 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 
 func init() {
 	rootCmd.AddCommand(newCmd)
+	curPath, _ := os.Getwd()
+
 	newCmd.Flags().StringP("name", "n", "", "Project name")
-	newCmd.Flags().StringP("path", "p", "", "Project path")
+	newCmd.Flags().StringP("path", "p", curPath, "Project path")
 	newCmd.Flags().StringP("module", "m", "", "Module name")
 	newCmd.Flags().StringP("driver", "d", "mysql", "Database driver name: mysql|postgres, default: mysql")
 
