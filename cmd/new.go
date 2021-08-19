@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/Narven/igniter-cli/templates"
 	"github.com/gobuffalo/packr"
+	"github.com/narvenlabs/spartan-cli/templates"
 	"github.com/spf13/cobra"
 	"log"
 	"os"

@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/Narven/igniter-cli/templates"
+	"github.com/narvenlabs/spartan-cli/templates"
 	"golang.org/x/mod/modfile"
 	"io/ioutil"
 	"log"

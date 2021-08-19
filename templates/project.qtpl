@@ -2,7 +2,7 @@
 {% func GenREADME(name string) -%}
 #  {%s name %}
 
-> This project was generated using [igniter-cli](https://github.com/Narven/igniter-cli)
+> This project was generated using [spartan-cli](https://github.com/narvenlabs/spartan-cli)
 
 ### Development
 
@@ -15,7 +15,7 @@ Next steps:
 
 ### Project Structure
 
-> Igniter tries to follow closely to the "Clean Architecture Go" described by [Elton Minetto](https://twitter.com/eminetto) in this 2 posts [Clean Architecture, 2 years later](https://eltonminetto.dev/en/post/2020-07-06-clean-architecture-2years-later/) and [Clean Architecture using Golang ](https://eltonminetto.dev/en/post/2018-03-05-clean-architecture-using-go/), plus a few more ready to go (pun intended) tooling.
+> Spartan tries to follow closely to the "Clean Architecture Go" described by [Elton Minetto](https://twitter.com/eminetto) in this 2 posts [Clean Architecture, 2 years later](https://eltonminetto.dev/en/post/2020-07-06-clean-architecture-2years-later/) and [Clean Architecture using Golang ](https://eltonminetto.dev/en/post/2018-03-05-clean-architecture-using-go/), plus a few more ready to go (pun intended) tooling.
 
 ```bash
 transport/
@@ -35,7 +35,7 @@ tmp/
 
 ### Tooling
 
-Igniter uses several tools in the background:
+Spartan uses several tools in the background:
 
 * [Air](https://github.com/cosmtrek/air) for "Live reload for Go apps"
 * [Goose](https://github.com/pressly/goose) for database migrations

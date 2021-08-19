@@ -13,7 +13,7 @@ builds:
       - darwin
       - linux
       - windows
-    binary: igniter
+    binary: spartan
 archives:
   - replacements:
       darwin: Darwin

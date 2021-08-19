@@ -1,4 +1,4 @@
-module github.com/Narven/igniter-cli
+module github.com/narvenlabs/spartan-cli
 
 go 1.16
 
