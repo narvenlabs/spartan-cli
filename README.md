@@ -1,6 +1,6 @@
-# igniter-cli
+# spartan-cli
 
-🔥️ igniter framework cli
+⚔️ SPARTAN Framework CLI tool
 
 > This is an ALPHA version, please use at your own risk.
 
@@ -10,7 +10,7 @@ Download the latest version from the `Releases` into your `/usr/local/bin`.
 
 TIP: (use this short version to help calling the command)
 ```bash
-echo "alias ign='/usr/local/bin/igniter'" >> ~/.bashrc
+echo "alias spa='/usr/local/bin/spartan'" >> ~/.bashrc
 ```
 
 > All following examples will use the short version `ign`
@@ -20,7 +20,7 @@ echo "alias ign='/usr/local/bin/igniter'" >> ~/.bashrc
 ### Create new Project
 
 ```bash
-ign new <projectname>
+spa new <projectname>
 ```
 
 extra flags:
