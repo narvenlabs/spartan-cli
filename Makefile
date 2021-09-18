@@ -22,4 +22,4 @@ help:
 	@echo "Targets:"
 	@echo "~> build          - uses gorealeaser to build a test version and copies to /usr/local/bin"
 	@echo "~> build-prod     - builds production version"
-	@echo "~> qtc            - generates templates, using quicktemplate"
+	@echo "~> templates            - generates templates, using quicktemplate"

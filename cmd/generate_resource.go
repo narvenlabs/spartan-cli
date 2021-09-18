@@ -73,7 +73,6 @@ func generateResource(path, name string, fields []string) {
 	usecasePath := filepath.Join(path, "usecase")
 	repositoryPath := filepath.Join(path, "infrastructure", "repository")
 	handlerPath := filepath.Join(path, "transport", "http", "handler")
-	presenterPath := filepath.Join(path, "transport", "http", "presenter")
 	dbDriver := "mysql"
 	moduleName, err := getModuleName(path)
 	if err != nil {
@@ -124,13 +123,6 @@ func generateResource(path, name string, fields []string) {
 		{
 			Path:    StrPtr(filepath.Join(handlerPath, fmt.Sprintf("%s%s", strings.ToLower(name), ".go"))),
 			Content: StrPtr(templates.GenResourceHandler(moduleName, name)),
-		},
-		{
-			Path: StrPtr(presenterPath),
-		},
-		{
-			Path:    StrPtr(filepath.Join(presenterPath, fmt.Sprintf("%s%s", strings.ToLower(name), ".go"))),
-			Content: StrPtr(templates.GenResourcePresenter(moduleName, name)),
 		},
 	}
 

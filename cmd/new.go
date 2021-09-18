@@ -2,14 +2,15 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/gobuffalo/packr"
-	"github.com/narvenlabs/spartan-cli/templates"
-	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"time"
+
+	"github.com/gobuffalo/packr"
+	"github.com/narvenlabs/spartan-cli/templates"
+	"github.com/spf13/cobra"
 )
 
 // newCmd represents the new command
@@ -60,7 +61,7 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 	}
 
 	httpPath := filepath.Join("transport", "http")
-	githubPath := filepath.Join(".github")
+	//githubPath := filepath.Join(".github")
 
 	operations := []OperationLogic{
 		{
@@ -72,36 +73,16 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			Content: StrPtr(templates.GenGitignore()),
 		},
 		{
-			Path:    StrPtr(".gitattributes"),
-			Content: StrPtr(templates.GenGitAttributes()),
-		},
-		{
 			Path:    StrPtr("go.mod"),
 			Content: StrPtr(templates.GenGoMod(moduleName)),
 		},
 		{
-			Path:    StrPtr(".env"),
+			Path:    StrPtr(".env.example"),
 			Content: StrPtr(templates.GenEnv(projectName, dbDriver)),
 		},
 		{
 			Path:    StrPtr("Makefile"),
 			Content: StrPtr(templates.GenMakeFile(projectName)),
-		},
-		{
-			Path:    StrPtr(".editorconfig"),
-			Content: StrPtr(templates.GenEditorConfig()),
-		},
-		{
-			Path:    StrPtr(".dockerignore"),
-			Content: StrPtr(templates.GenDockerIgnore()),
-		},
-		{
-			Path:    StrPtr("docker-compose.yml"),
-			Content: StrPtr(templates.GenDockerCompose(projectName, dbDriver)),
-		},
-		{
-			Path:    StrPtr("Dockerfile"),
-			Content: StrPtr(templates.GenDockerfile()),
 		},
 		{
 			Path:    StrPtr("LICENSE"),
@@ -112,17 +93,10 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			Content: StrPtr(templates.GenAuthors()),
 		},
 		{
-			Path:    StrPtr(".air.toml"),
-			Content: StrPtr(templates.GenAirToml()),
-		},
-		{
-			Path: StrPtr("migrations"),
-		},
-		{
-			Path: StrPtr(githubPath),
-		},
-		{
 			Path: StrPtr("pkg"),
+		},
+		{
+			Path: StrPtr("pkg/dtos"),
 		},
 		{
 			Path: StrPtr("entity"),
@@ -134,38 +108,23 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			Path: StrPtr("usecase"),
 		},
 		{
-			Path: StrPtr("locales"),
+			Path: StrPtr("repository"),
 		},
 		{
-			Path: StrPtr("locales"),
+			Path: StrPtr("internal/server"),
 		},
 		{
-			Path: StrPtr("public"),
+			Path:    StrPtr("internal/server/server.go"),
+			Content: StrPtr(templates.GenServer(moduleName)),
 		},
 		{
-			Path:    StrPtr(".spartan.toml"),
-			Content: StrPtr(templates.GenSpartanConfig(projectName, moduleName)),
+			Path: StrPtr(filepath.Join(httpPath, "handler")),
+		},
+		{
+			Path: StrPtr(filepath.Join(httpPath, "middleware")),
 		},
 		{
 			Path: StrPtr(httpPath),
-		},
-		{
-			Path:    StrPtr(filepath.Join(githubPath, "ISSUE_TEMPLATE.md")),
-			Content: StrPtr(templates.GenGithubIssueTemplate()),
-		},
-		{
-			Path:    StrPtr(filepath.Join(githubPath, "PULL_REQUEST_TEMPLATE.md")),
-			Content: StrPtr(templates.GenPullRequestTemplate()),
-		},
-		{
-			Path: StrPtr(filepath.Join(githubPath, "workflows")),
-		},
-		{
-			Path:    StrPtr(filepath.Join(githubPath, "workflows", "ci.yml")),
-			Content: StrPtr(templates.GenGithubCI()),
-		},
-		{
-			Path: StrPtr(filepath.Join("infrastructure", "repository")),
 		},
 		{
 			Path:    StrPtr(filepath.Join("entity", "entity.go")),
@@ -176,20 +135,11 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 			Content: StrPtr(templates.GenProjectConfig()),
 		},
 		{
-			Path: StrPtr(filepath.Join(httpPath, "handler")),
-		},
-		{
-			Path: StrPtr(filepath.Join(httpPath, "middleware")),
-		},
-		{
-			Path: StrPtr(filepath.Join(httpPath, "presenter")),
-		},
-		{
 			Path: StrPtr("cmd"),
 		},
 		{
 			Path:    StrPtr(filepath.Join("cmd", "main.go")),
-			Content: StrPtr(templates.GenerateApiMain(moduleName, projectName, dbDriver)),
+			Content: StrPtr(templates.GenerateMain(moduleName)),
 		},
 		{
 			Content: StrPtr(templates.GenWelcomeMsg(projectName)),
@@ -198,7 +148,6 @@ func generateBoilerplate(path, projectName, moduleName, dbDriver string, box pac
 
 	for _, o := range operations {
 		if o.Path == nil {
-			fmt.Println(*o.Content)
 			continue
 		}
 
