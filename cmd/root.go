@@ -13,9 +13,9 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "igniter-cli",
-	Short: "Igniter Framework CLI",
-	Long:  `Igniter Framework CLI, to help generate boilerplate code for the Igniter Framework.`,
+	Use:   "spartan",
+	Short: "⚔️ SPARTAN Framework CLI",
+	Long:  `⚔️ SPARTAN Framework CLI, to help generate boilerplate code for the ⚔️ SPARTAN Framework.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -44,9 +44,9 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".ignitercli" (without extension).
+		// Search config in home directory with name ".spartancli" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".ignitercli")
+		viper.SetConfigName(".spartancli")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

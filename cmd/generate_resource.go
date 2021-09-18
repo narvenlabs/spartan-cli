@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/Narven/igniter-cli/templates"
+	"github.com/narvenlabs/spartan-cli/templates"
 	"golang.org/x/mod/modfile"
 	"io/ioutil"
 	"log"
@@ -72,8 +72,7 @@ func generateResource(path, name string, fields []string) {
 	entityPath := filepath.Join(path, "entity")
 	usecasePath := filepath.Join(path, "usecase")
 	repositoryPath := filepath.Join(path, "infrastructure", "repository")
-	handlerPath := filepath.Join(path, "api/handler")
-	presenterPath := filepath.Join(path, "api/presenter")
+	handlerPath := filepath.Join(path, "transport", "http", "handler")
 	dbDriver := "mysql"
 	moduleName, err := getModuleName(path)
 	if err != nil {
@@ -94,6 +93,12 @@ func generateResource(path, name string, fields []string) {
 			Content: StrPtr(templates.GenTestCustomEntity(moduleName, name)),
 		},
 		{
+			Path: StrPtr(usecasePath),
+		},
+		{
+			Path: StrPtr(filepath.Join(usecasePath, strings.ToLower(name))),
+		},
+		{
 			Path:    StrPtr(filepath.Join(usecasePath, strings.ToLower(name), "interface.go")),
 			Content: StrPtr(templates.GenEntityUsecaseInterface(moduleName, name)),
 		},
@@ -102,20 +107,22 @@ func generateResource(path, name string, fields []string) {
 			Content: StrPtr(templates.GenEntityUsecaseService(moduleName, name)),
 		},
 		{
+			Path: StrPtr(repositoryPath),
+		},
+		{
 			Path:    StrPtr(filepath.Join(repositoryPath, fmt.Sprintf("%s_%s%s", strings.ToLower(name), dbDriver, ".go"))),
 			Content: StrPtr(templates.GenEntityRepository(moduleName, name)),
 		},
 		{
-			Path:    StrPtr(filepath.Join(handlerPath, fmt.Sprintf("%s%s", strings.ToLower(name), ".go"))),
-			Content: StrPtr(templates.GenResourceHandler(moduleName, name)),
+			Path: StrPtr(handlerPath),
 		},
 		{
 			Path:    StrPtr(filepath.Join(handlerPath, fmt.Sprintf("%s%s", strings.ToLower(name), ".go"))),
 			Content: StrPtr(templates.GenResourceHandler(moduleName, name)),
 		},
 		{
-			Path:    StrPtr(filepath.Join(presenterPath, fmt.Sprintf("%s%s", strings.ToLower(name), ".go"))),
-			Content: StrPtr(templates.GenResourcePresenter(moduleName, name)),
+			Path:    StrPtr(filepath.Join(handlerPath, fmt.Sprintf("%s%s", strings.ToLower(name), ".go"))),
+			Content: StrPtr(templates.GenResourceHandler(moduleName, name)),
 		},
 	}
 

@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/Narven/igniter-cli/cmd"
+import "github.com/narvenlabs/spartan-cli/cmd"
 
 func main() {
 	cmd.Execute()

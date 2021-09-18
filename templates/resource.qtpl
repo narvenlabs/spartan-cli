@@ -19,7 +19,7 @@ import (
 
 // {%s name%} data
 type {%s name %} struct {
-	ID        int
+	ID        int64
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time
@@ -95,14 +95,15 @@ type UseCase interface {
 }
 {% endfunc %}
 
-{% func GenEntityUsecaseService(projectName string, name string) -%}
+{% func GenEntityUsecaseService(moduleName, name string) -%}
 {% code lcName := strings.ToLower(name) %}
 package {%s lcName %}
 
 import (
 	"context"
-	"{%s projectName %}/entity"
 	"time"
+
+	"{%s moduleName %}/entity"
 )
 
 type Service struct {
@@ -110,8 +111,8 @@ type Service struct {
 }
 
 // New{%s name %} create a new {%s lcName %}
-func New{%s name %}(r Repository) *{%s name %} {
-	return &{%s name %}{
+func New{%s name %}(r Repository) *Service {
+	return &Service{
 		repo: r,
 	}
 }
@@ -154,7 +155,6 @@ func (s *Service) UpdateSubject(ctx context.Context, e *entity.{%s name %}) erro
 	e.UpdatedAt = time.Now()
 	return s.repo.Update(ctx, e)
 }
-
 {% endfunc %}
 
 {% func GenEntityRepository(projectName string, name string) -%}
@@ -163,11 +163,11 @@ package repository
 
 import (
 	"context"
-	"fmt"
+    "time"
+
 	sq "github.com/Masterminds/squirrel"
-	"github.com/jmoiron/sqlx"
 	"{%s projectName %}/entity"
-	"time"
+	"github.com/jmoiron/sqlx"
 )
 
 type {%s name %}Repo struct {
@@ -185,8 +185,6 @@ func New{%s name %}Repo(db *sqlx.DB) *{%s name %}Repo {
 func (r *{%s name %}Repo) Create(ctx context.Context, e *entity.{%s name %}) (entity.ID, error) {
 	err := sq.
 		Insert("{%s lcName %}").
-		// Columns("id", "title", "description").
-		// Values(e.ID, e.Title, e.Description).
 		// Suffix("RETURNING \"id\""). // postgres only
 		RunWith(r.db).
 		ScanContext(ctx, &e)
@@ -202,7 +200,7 @@ func (r *{%s name %}Repo) Create(ctx context.Context, e *entity.{%s name %}) (en
 func (r *{%s name %}Repo) Get(ctx context.Context, id entity.ID) (*entity.{%s name %}, error) {
 	var {%s lcName %} entity.{%s name %}
 	err := sq.
-		Select("title", "description", "created_at", "updated_at").
+		Select("id", "created_at", "updated_at").
 		From("{%s lcName %}").
 		Where(sq.Eq{"id": id}).
 		Where(sq.Eq{"deleted_at": nil}).
@@ -219,9 +217,9 @@ func (r *{%s name %}Repo) Update(ctx context.Context, e *entity.{%s name %}) err
 	e.UpdatedAt = time.Now()
 	_, err := sq.
 		Update("{%s lcName %}").
-		Set("title", e.Title).
-		Set("description", e.Description).
-		Set("updated_at", e.UpdatedAt).
+		// Set("title", e.Title).
+		// Set("description", e.Description).
+		// Set("updated_at", e.UpdatedAt).
 		Where(sq.Eq{"id": e.ID}).ExecContext(ctx)
 	if err != nil {
 		return err
@@ -235,9 +233,10 @@ func (r *{%s name %}Repo) List(ctx context.Context) ([]*entity.{%s name %}, erro
 
 	var {%s lcName %}s []*entity.{%s name %}
 	sql, _, err := sq.
-		Select("id", "title", "description", "created_at", "updated_at").
+		Select("id", "created_at", "updated_at").
 		From("{%s lcName %}").
-		Limit(30). // TODO needs to come from pagination
+		Limit(30).
+		Offset(0).
 		ToSql()
 	if err != nil {
 		return nil, err
@@ -252,8 +251,6 @@ func (r *{%s name %}Repo) List(ctx context.Context) ([]*entity.{%s name %}, erro
 		var {%s lcName %} entity.{%s name %}
 		_ = rows.Scan(
 			&{%s lcName %}.ID,
-			&{%s lcName %}.Title,
-			&{%s lcName %}.Description,
 			&{%s lcName %}.CreatedAt,
 			&{%s lcName %}.UpdatedAt,
 		)
@@ -282,7 +279,7 @@ package handler
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"{%s moduleName %}/api/presenter"
+	"{%s moduleName %}/transport/http/presenter"
 	"{%s moduleName %}/entity"
 	"{%s moduleName %}/usecase/{%s lcResourceName %}"
 )
@@ -317,8 +314,8 @@ func list{%s resourceName %}s(service {%s lcResourceName %}.UseCase) fiber.Handl
 func create{%s resourceName %}(service {%s lcResourceName %}.UseCase, v *validator.Validate) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		var body struct {
-			Title       string `json:"title" validate:"required"`
-			Description string `json:"description" validate:"required"`
+			// Title       string `json:"title" validate:"required"`
+			// Description string `json:"description" validate:"required"`
 		}
 
 		if err := ctx.BodyParser(&body); err != nil {

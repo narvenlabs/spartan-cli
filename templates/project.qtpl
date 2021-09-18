@@ -1,41 +1,238 @@
 {% import "strings" %}
+
+{% func GenServer(moduleName string) -%}
+package transport
+
+import (
+	"fmt"
+	"os"
+	"time"
+
+	"github.com/getsentry/sentry-go"
+	"github.com/go-playground/validator/v10"
+	"github.com/go-testfixtures/testfixtures/v3"
+	"github.com/gofiber/adaptor/v2"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/favicon"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
+	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/helmet/v2"
+	"github.com/gofiber/storage/mysql"
+	"github.com/jmoiron/sqlx"
+	"github.com/rs/zerolog"
+	"{%s moduleName %}/config"
+	"{%s moduleName %}/docs"
+	httpSwagger "github.com/swaggo/http-swagger"
+)
+
+// Server Server
+type Server struct {
+	DB   *sqlx.DB
+	Log  *logger.Logger
+	Mail *mailutils.MailUtils
+	App  *fiber.App
+	Val  *validator.Validate
+}
+
+// Run run
+func (s *Server) Run(version string, cfg *config.Config) error {
+	log := setupLogger(cfg)
+	s.Log = log
+	log.Info("Server.Run", "Starting...")
+
+	if sErr := sentry.Init(sentry.ClientOptions{
+		// Dsn:              cfg.Sentry.DSN,
+		// TracesSampleRate: cfg.Sentry.TracesSampleRate,
+		// Release:          cfg.App.Version,
+		// Debug:            cfg.Server.Mode == "development",
+		// Environment:      cfg.Server.Mode,
+	}); sErr != nil {
+		log.ErrorM(sErr, map[string]interface{}{"cfg": cfg}, "Run.sentry.Init")
+		return sErr
+	}
+	log.Info("Server.Sentry", "OK")
+
+	db, err := dbConnect(cfg)
+	if err != nil {
+		log.ErrorM(err, map[string]interface{}{"cfg": cfg}, "Run.dbConnect")
+		return err
+	}
+	s.DB = db
+	log.Info("Server.Database", "OK")
+
+	mail := mailutils.NewMailService(log)
+	s.Mail = mail
+	log.Info("Server.Mail", "OK")
+
+	v := validator.New()
+	s.Val = v
+
+	app := bootAPI(version, cfg, db, log, mail, v)
+	s.App = app
+	log.Info("Server.API", "OK")
+	return nil
+}
+
+func setupLogger(cfg *config.Config) *logger.Logger {
+	output := zerolog.ConsoleWriter{
+		Out:        os.Stderr,
+		TimeFormat: zerolog.TimeFormatUnix,
+		NoColor:    true,
+	}
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if cfg.GoEnv == "development" {
+		output = zerolog.ConsoleWriter{
+			Out:        os.Stdout,
+			TimeFormat: time.RFC3339,
+			NoColor:    false,
+		}
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	}
+	zlog := zerolog.New(output).With().Timestamp().Logger()
+	return logger.NewLogger(&zlog)
+}
+
+func dbConnect(cfg *config.Config) (*sqlx.DB, error) {
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?parseTime=true&collation=utf8mb4_general_ci&tls=skip-verify",
+		cfg.DatabaseUser,
+		cfg.DatabasePassword,
+		cfg.DatabaseHost,
+		cfg.DatabasePort,
+		cfg.DatabaseName,
+	)
+	db, err := sqlx.Connect("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+	if cfg.GoEnv == "test" {
+		// err := prepareDatabase(db)
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+	}
+	return db, nil
+}
+
+func prepareDatabase(db *sqlx.DB) error {
+	fixtures, _ := testfixtures.New(
+		testfixtures.Database(db.DB),
+		testfixtures.Dialect("mysql"),
+		testfixtures.Files(
+			"../../testdata/fixtures/school.yml",
+			"../../testdata/fixtures/year.yml",
+			"../../testdata/fixtures/class.yml",
+		),
+	)
+	if err := fixtures.Load(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func handlerSwagger(version string, cfg *config.Config) fiber.Handler {
+	url := fmt.Sprintf("http://%s:%s/%s/docs/doc.json",
+		"localhost",
+		"9069",
+		version,
+	)
+	return adaptor.HTTPHandlerFunc(httpSwagger.Handler(httpSwagger.URL(url)))
+}
+
+func bootAPI(version string, cfg *config.Config, db *sqlx.DB, l *logger.Logger, mail *mailutils.MailUtils, v *validator.Validate) *fiber.App {
+	app := fiber.New(fiber.Config{
+		CaseSensitive:         true,
+		DisableStartupMessage: cfg.GoEnv == "production",
+	})
+	app.Use(fiberLogger.New())
+	app.Use(recover.New())
+
+	app.Use(cors.New(cors.Config{
+		AllowCredentials: true,
+		AllowHeaders:     "*",
+		AllowMethods:     "*",
+		AllowOrigins:     fmt.Sprintf("%s", cfg.DashboardURL),
+		ExposeHeaders:    "*",
+	}))
+
+	app.Use(favicon.New())
+
+	app.Use(helmet.New())
+
+	rv := app.Group(fmt.Sprintf("/%s", version))
+
+	if cfg.GoEnv == "development" {
+		docs.SwaggerInfo.Title = "VSkool Internal API"
+		docs.SwaggerInfo.Description = "VSkool Internal API"
+		docs.SwaggerInfo.Version = "v1"
+		docs.SwaggerInfo.Host = fmt.Sprintf("http://%s:%s", "localhost", "9069")
+		docs.SwaggerInfo.BasePath = version
+		docs.SwaggerInfo.Schemes = []string{"http", "https"}
+
+		app.Get(fmt.Sprintf("/%s/docs/*", version), handlerSwagger(version, cfg))
+	}
+
+	// MIDDLEWARE
+	mw := middleware.NewMiddlewareManager(cfg, authService, l)
+
+	// HANDLERS
+	handler.MapRootRoutes(rv.Group("/"), cfg)
+
+	app.Get("/health", func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"status": "OK",
+		})
+	})
+
+	app.Use(func(c *fiber.Ctx) error {
+		return c.SendStatus(fiber.StatusNotFound)
+	})
+	return app
+}
+{% endfunc %}
+
+{% func GenSpartanConfig(projectName string, moduleName string) -%}
+title = "{%s projectName %}"
+
+[spartan]
+api = true
+web = false
+driver = "mysql"
+
+[locales]
+data = false
+{% endfunc %}
+
 {% func GenREADME(name string) -%}
 #  {%s name %}
 
-> This project was generated using [igniter-cli](https://github.com/Narven/igniter-cli)
+> This project was generated using [spartan-cli](https://github.com/narvenlabs/spartan-cli)
 
 ### Development
 
 After project generation:
 
-Next steps:
-* `docker-compose up -d` to bring you containers up
-* `make start` or `air` to run environment
-* [http://localhost:9069/ping](http://localhost:9069/ping) to see if API is responding with `200`
-
 ### Project Structure
-
-> Igniter tries to follow closely to the "Clean Architecture Go" described by [Elton Minetto](https://twitter.com/eminetto) in this 2 posts [Clean Architecture, 2 years later](https://eltonminetto.dev/en/post/2020-07-06-clean-architecture-2years-later/) and [Clean Architecture using Golang ](https://eltonminetto.dev/en/post/2018-03-05-clean-architecture-using-go/), plus a few more ready to go (pun intended) tooling.
 
 ```bash
 transport/
     http/
         handler/
         middleware/
-        presenter/
-        main.go
 config/
 entity/
-infrastructure/
-    repository/
+repository/
 migrations/
 pkg/
+	dtos/
 tmp/
 ```
 
 ### Tooling
 
-Igniter uses several tools in the background:
+Spartan uses several tools in the background:
 
 * [Air](https://github.com/cosmtrek/air) for "Live reload for Go apps"
 * [Goose](https://github.com/pressly/goose) for database migrations
@@ -141,7 +338,6 @@ SENTRY_TRACES_SAMPLE_RATE=
 
 {% func GenMakeFile(name string) -%}
 {% code lcName := strings.ToLower(name) %}
-.RECIPEPREFIX = >
 .PHONY: all
 .DEFAULT_GOAL := help
 
@@ -164,27 +360,29 @@ LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.Build=${BUILD}"
 start: dcu air
 	# > go run transport/http/main.go
 
+air:
+	air
+
 dcu:
-    > docker-compose up -d
+	docker-compose up -d
 
 dcd:
-    > docker-compose down
+	docker-compose down
 
 build:
-	> go build ${LDFLAGS} -o ${BINARY}
+	go build ${LDFLAGS} -o ${BINARY}
 
 deps: ## Download dependencies
-	> go mod tidy
+	go mod tidy
 
 fmt: ## Format source code with gofmt
-	> find . -name "*.go" -exec gofmt -s -w {} \;
+	find . -name "*.go" -exec gofmt -s -w {} \;
 
 help:
-	> @echo "Help: {%s name %} root Makefile"
-	> @echo "Usage: make [TARGET] [EXTRA_ARGUMENTS]"
-	> @echo "Targets:"
-	> @echo "~> start					- starts the application"
-
+	@echo "Help: {%s name %} root Makefile"
+	@echo "Usage: make [TARGET] [EXTRA_ARGUMENTS]"
+	@echo "Targets:"
+	@echo "~> start					- starts the application"
 {% endfunc %}
 
 {% func GenEditorConfig() -%}
@@ -260,7 +458,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 CMD ["/app"]
 {% endfunc %}
 
-{% func GenerateApiMain(moduleName, projectName, dbDriver string) -%}
+{% func GenerateMain(moduleName string) -%}
 package main
 
 import (
@@ -277,63 +475,34 @@ import (
 )
 
 func main() {
-    cfg, err := config.LoadConfig()
-    if err != nil {
-        log.Fatalf("LoadConfig error: %v", err)
-    }
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		// TODO: need to change this panic
+		log.Panicf("LoadConfig: %v", err)
+	}
 
-    {% if dbDriver == "mysql" %}
-    dsn := fmt.Sprintf(
-        "%s:%s@tcp(%s:%s)/%s?parseTime=true",
-        cfg.DBUser,
-        cfg.DBPass,
-        cfg.DBHost,
-        cfg.DBPort,
-        cfg.DBName,
-    )
-    {% elseif dbDriver == "postgres" %}
+	server := transport.Server{}
+	err = server.Run("v1", &cfg)
+	if err != nil {
+		// TODO: need to change this panic
+		log.Panicf("LoadConfig: %v", err)
+	}
 
-    dsn := fmt.Sprintf(
-        "%s:%s@tcp(%s:%s)/%s?sslmode=disable",
-        cfg.DBUser,
-        cfg.DBPass,
-        cfg.DBHost,
-        cfg.DBPort,
-        cfg.DBName,
-    )
-    {% endif %}
+	if vErr := server.Val.Struct(cfg); vErr != nil {
+		server.Log.ErrorM(vErr, map[string]interface{}{}, "configuration not valid")
+	}
 
-    db, err := sqlx.Connect("{%s dbDriver %}", dsn)
-    if err != nil {
-        log.Fatal(err.Error())
-    }
-    defer db.Close()
+	defer server.DB.Close()
+	defer sentry.Flush(2 * time.Second)
+	defer sentry.Recover()
 
-    app := fiber.New(fiber.Config{
-        CaseSensitive: true,
-    })
-    app.Use(fiberLogger.New())
-    app.Use(recover.New())
-
-    app.Use(cors.New(cors.Config{
-        AllowCredentials: true,
-        AllowHeaders:     "Authorization,Content-Type,Crossdomain,Origin",
-        AllowMethods:     "PUT,PATCH,GET,POST,DELETE",
-        AllowOrigins:     "*",
-        ExposeHeaders:    "Content-Length,Authorization",
-    }))
-
-    app.Get("/ping", func(ctx *fiber.Ctx) error {
-        return ctx.SendStatus(fiber.StatusOK)
-    })
-
-    log.Fatal(app.Listen(fmt.Sprintf(":%d", 9069)))
+	log.Fatal(server.App.Listen(fmt.Sprintf(":%d", 9069)))
 }
 {% endfunc %}
 
 {% func GenWelcomeMsg(projectName string) %}
 
-🔥️ Project {%s projectName %} generated successfully
+⚔️️  Project {%s projectName %} generated successfully
 
 Next steps:
 
@@ -492,7 +661,7 @@ tmp_dir = "tmp"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "go build -o ./tmp/main transport/http/main.go"
+cmd = "go build -o ./tmp/main cmd/main.go"
 # Binary file yields from `cmd`.
 bin = "tmp/main"
 # Customize binary.
@@ -556,17 +725,18 @@ FirstName LastName <FirstName.LastName@provider.com>
 package config
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
 )
 
+// Config config
 type Config struct {
-    DBDriver               string `mapstructure:"DB_DRIVER"`
-	DBHost                 string `mapstructure:"DB_HOST" validate:"required"`
-	DBName                 string `mapstructure:"DB_NAME" validate:"required"`
-	DBPass                 string `mapstructure:"DB_PASS" validate:"required"`
-	DBPort                 string `mapstructure:"DB_PORT" validate:"required"`
-	DBUser                 string `mapstructure:"DB_USER" validate:"required"`
+	GoEnv                  string `mapstructure:"GO_ENV" validate:"required"`
+	DashboardURL           string `mapstructure:"DASHBOARD_URL" validate:"required"`
+	DatabaseHost           string `mapstructure:"DATABASE_HOST" validate:"required"`
+	DatabaseName           string `mapstructure:"DATABASE_NAME" validate:"required"`
+	DatabasePassword       string `mapstructure:"DATABASE_PASSWORD" validate:"required"`
+	DatabasePort           string `mapstructure:"DATABASE_PORT" validate:"required"`
+	DatabaseUser           string `mapstructure:"DATABASE_USER" validate:"required"`
 	JWTKeyPath             string `mapstructure:"JWT_KEY_PATH" validate:"required"`
 	SendgridAPIKey         string `mapstructure:"SENDGRID_API_KEY" validate:"required"`
 	SendgridEmail          string `mapstructure:"SENDGRID_EMAIL" validate:"required"`
@@ -575,21 +745,34 @@ type Config struct {
 	SentryTracesSampleRate string `mapstructure:"SENTRY_TRACES_SAMPLE_RATE"`
 }
 
+// LoadConfig load config
 func LoadConfig() (config Config, err error) {
 	v := viper.New()
-	v.SetConfigType("env")
-	v.SetConfigFile(".env")
-	v.AllowEmptyEnv(true)
 	v.AutomaticEnv()
 
-	err = v.ReadInConfig()
-	if err != nil {
-		fmt.Printf("Error when Fetching Configuration - %s", err)
-	}
+	_ = v.BindEnv("GO_ENV")
+	_ = v.BindEnv("DASHBOARD_URL")
+	_ = v.BindEnv("DATABASE_HOST")
+	_ = v.BindEnv("DATABASE_NAME")
+	_ = v.BindEnv("DATABASE_PASSWORD")
+	_ = v.BindEnv("DATABASE_PORT")
+	_ = v.BindEnv("DATABASE_USER")
+	_ = v.BindEnv("JWT_KEY_PATH")
+	_ = v.BindEnv("SENDGRID_API_KEY")
+	_ = v.BindEnv("SENDGRID_EMAIL")
+	_ = v.BindEnv("SENTRY_DSN")
+	_ = v.BindEnv("SENTRY_RELEASE")
+	_ = v.BindEnv("SENTRY_TRACES_SAMPLE_RATE")
+
+	// err = v.ReadInConfig()
+	// if err != nil {
+	// 	fmt.Printf("Error when Fetching Configuration - %v\n", err)
+	// }
 
 	if err := v.Unmarshal(&config); err != nil {
 		return config, err
 	}
+	// v.Debug()
 	return
 }
 {% endfunc %}
